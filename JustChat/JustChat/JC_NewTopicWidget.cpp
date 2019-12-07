@@ -30,7 +30,7 @@ void JC_NewTopicWidget::dealNewTopic()
 
 
 		// 关闭当前话题列表
-		this->close();
+		//this->close();
 	}
 }
 

@@ -14,8 +14,10 @@ class JC_TopicWidget : public QWidget
 	Q_OBJECT
 
 public:
-	JC_TopicWidget( qint32 id, QWidget *parent = Q_NULLPTR);
+	JC_TopicWidget( QWidget *parent = Q_NULLPTR);
 	~JC_TopicWidget();
+	void setTheme( QString theme );
+	void setDetail( QString detail );
 	public slots:
 	void dealShow();
 private:

@@ -30,7 +30,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit">
+            <widget class="QLineEdit" name="lineEtTheme">
              <property name="readOnly">
               <bool>true</bool>
              </property>
@@ -61,7 +61,7 @@
             </spacer>
            </item>
            <item row="0" column="1" rowspan="2">
-            <widget class="QTextBrowser" name="textBrowser"/>
+            <widget class="QTextEdit" name="txtDetail"/>
            </item>
           </layout>
          </item>

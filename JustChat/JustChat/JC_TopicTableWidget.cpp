@@ -7,8 +7,11 @@ JC_TopicTableWidget::JC_TopicTableWidget( QWidget *parent)
 	fHome = ( JC_HomeDialog * ) parent;
 	setWindowTitle( tr( "所有主题表格" ) );
 	fTopicTableWidget = new QTableWidget( 10, 3, this );
+	fCurWidget = fTopicTableWidget;
 	fBtnView = new QPushButton("查看");
-	fBtnClose = new QPushButton("关闭");
+	fBtnClose = new QPushButton( "关闭" );
+	fBtnBack = new QPushButton( "返回" );
+	fTopicWidget = new JC_TopicWidget()
 	
 	fTopicTableWidget->setHorizontalHeaderLabels( QStringList() << "id" << "标题" << "内容" );
 	fTopicTableWidget->verticalHeader()->setVisible( true );
@@ -25,6 +28,7 @@ JC_TopicTableWidget::JC_TopicTableWidget( QWidget *parent)
 	QHBoxLayout *hLayout = new QHBoxLayout;
 	hLayout->addStretch( 1 );
 	hLayout->addWidget( fBtnView );
+	hLayout->addWidget( fBtnBack );
 	hLayout->addWidget( fBtnClose );
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
@@ -33,7 +37,8 @@ JC_TopicTableWidget::JC_TopicTableWidget( QWidget *parent)
 	// 建立信号槽
 	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowTopic() ) );
 	connect( fBtnClose, SIGNAL( clicked() ), this, SLOT( close() ) );
-	connect( this, SIGNAL( sigViewTopic( qint32 ) ), fHome, SLOT( dealShowTopic( qint32 ) ) );
+	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
+	//connect( this, SIGNAL( sigViewTopic( qint32 ) ), fHome, SLOT( dealShowTopic( qint32 ) ) );
 }
 
 void JC_TopicTableWidget::dealShow()
@@ -70,7 +75,8 @@ void JC_TopicTableWidget::dealShowTopic()
 	}
 	QTableWidgetItem *curItm = fTopicTableWidget->selectedItems().front();
 	qint32 id = ( qint32 )curItm->text().toInt();
-	emit sigViewTopic( id );
+	// 获取窗口信息
+
 }
 
 JC_TopicTableWidget::~JC_TopicTableWidget()

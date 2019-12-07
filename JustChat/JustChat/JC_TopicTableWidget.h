@@ -24,8 +24,11 @@ public:
 signals:
 	void sigViewTopic( qint32 id );
 private:
+	QWidget *fCurWidget;
 	QTableWidget *fTopicTableWidget;
 	QPushButton *fBtnView;
 	QPushButton *fBtnClose;
+	QPushButton *fBtnBack;
+	JC_TopicWidget *fTopicWidget;
 	JC_HomeDialog *fHome;
 };

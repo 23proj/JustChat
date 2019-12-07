@@ -35,6 +35,6 @@ void JC_NewGroupWidget::dealNewGroup()
 
 
 		// 关闭当前话题列表
-		this->close();
+		//this->close();
 	}
 }
