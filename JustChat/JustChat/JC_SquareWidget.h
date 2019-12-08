@@ -1,6 +1,7 @@
 #pragma once
 #pragma execution_character_set("utf-8")
 
+#include "JC_Public.h"
 #include <QWidget>
 #include <QListWidget>
 #include <QPushButton>
@@ -17,10 +18,16 @@ class JC_SquareWidget : public QWidget
 public:
 	JC_SquareWidget(QWidget *parent = Q_NULLPTR);
 	~JC_SquareWidget();
+	void setMessages( QVector<MessageNode> messages );
+	void addMessage( MessageNode message );
+	public slots:
+	void dealShow();
+	void dealSendOut();
 private:
 	JC_HomeDialog *fHome;
 	QListWidget *fLstMsgWindow;
 	QTextEdit *fTxtInputWindow;
-	QPushButton *fBtnSend;
+	QPushButton *fBtnSendOut;
 	QLabel *fOnlineCount;
+	QVector<MessageNode> fMessages;
 };

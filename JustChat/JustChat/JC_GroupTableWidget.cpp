@@ -7,8 +7,11 @@ JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
 	fHome = ( JC_HomeDialog * ) parent;
 	setWindowTitle( tr( "所有群组表格" ) );
 	fGroupTableWidget = new QTableWidget( 10, 4, this );
+	fCurWidget = fGroupTableWidget;
 	fBtnView = new QPushButton( "查看" );
-	fBtnClose = new QPushButton( "关闭" );
+	fBtnBack = new QPushButton( "返回" );
+	fGroupWidget = new JC_GroupWidget();
+	fGroupWidget->hide();
 
 	fGroupTableWidget->setHorizontalHeaderLabels( QStringList() << "所有群组id" << "群组名称" << "群组详情" << "群组人数" );
 	fGroupTableWidget->verticalHeader()->setVisible( true );
@@ -22,18 +25,18 @@ JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
 	fGroupTableWidget->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );//设置垂直滚动条
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addWidget( fGroupTableWidget );
+	mainLayout->addWidget( fGroupWidget );
 	QHBoxLayout *hLayout = new QHBoxLayout;
 	hLayout->addStretch( 1 );
 	hLayout->addWidget( fBtnView );
-	hLayout->addWidget( fBtnClose );
+	hLayout->addWidget( fBtnBack );
+	//hLayout->addWidget( fBtnClose );
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
-	//setFixedSize( QSize( 600, 400 ) );
 
 	// 建立信号槽
 	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowGroup() ) );
-	connect( fBtnClose, SIGNAL( clicked() ), this, SLOT( close() ) );
-	connect( this, SIGNAL( sigViewGroup( qint32 ) ), fHome, SLOT( dealShowGroup( qint32 ) ) );
+	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
 }
 
 JC_GroupTableWidget::~JC_GroupTableWidget()
@@ -64,18 +67,27 @@ void JC_GroupTableWidget::dealShow()
 	}
 
 	/* 显示窗口 */
-	show();
+	fCurWidget->hide();
+	fCurWidget = fGroupTableWidget;
+	fCurWidget->show();
 }
 
 void JC_GroupTableWidget::dealShowGroup()
 {
 	// 获取当前选择的群组
-	if ( fGroupTableWidget->selectedItems().empty() )
+	QList<QTableWidgetItem*> items = fGroupTableWidget->selectedItems();
+	if ( items.empty() )
 	{
 		QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个群组" ) );
 		return;
 	}
-	QTableWidgetItem *curItm = fGroupTableWidget->selectedItems().front();
-	qint32 id = ( qint32 ) curItm->text().toInt();
-	emit sigViewGroup( id );
+	
+	// 获取窗口信息
+	fGroupWidget->setID( ( qint32 ) items[0]->text().toInt() );
+	fGroupWidget->setName( items[1]->text() );
+	fGroupWidget->setDetail( items[2]->text() );
+	fGroupWidget->setMessages( QVector<MessageNode>() ); // TODO: 填充评论数据
+	fCurWidget->hide();
+	fCurWidget = fGroupWidget;
+	fCurWidget->show();
 }

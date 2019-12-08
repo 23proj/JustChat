@@ -136,9 +136,9 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_7">
+               <widget class="QPushButton" name="btnSendOut">
                 <property name="text">
-                 <string>发送</string>
+                 <string>发表评论</string>
                 </property>
                </widget>
               </item>

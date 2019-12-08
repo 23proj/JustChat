@@ -6,6 +6,7 @@
 #include <QPushButton>
 
 class JC_HomeDialog;
+class JC_GroupWidget;
 
 class JC_MyGroupTableWidget : public QWidget
 {
@@ -17,11 +18,11 @@ public:
 	public slots:
 	void dealShow();
 	void dealShowGroup();
-signals:
-	void sigViewGroup( qint32 id );
 private:
+	QWidget *fCurWidget;
 	QTableWidget *fGroupTableWidget;
 	QPushButton *fBtnView;
-	QPushButton *fBtnClose;
+	QPushButton *fBtnBack;
 	JC_HomeDialog *fHome;
+	JC_GroupWidget *fGroupWidget;
 };

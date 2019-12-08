@@ -39,12 +39,47 @@ JC_SquareWidget::JC_SquareWidget(QWidget *parent)
 
 	horizontalLayout->addItem( horizontalSpacer );
 
-	fBtnSend = new QPushButton( tr("发送"), this );
+	fBtnSendOut = new QPushButton( tr("发送"), this );
 
-	horizontalLayout->addWidget( fBtnSend );
+	horizontalLayout->addWidget( fBtnSendOut );
 	showArea->addLayout( horizontalLayout );
+
+	connect( fBtnSendOut, SIGNAL( clicked() ), this, SLOT( dealSendOut() ) );
 }
 
 JC_SquareWidget::~JC_SquareWidget()
 {
+}
+
+void JC_SquareWidget::setMessages( QVector<MessageNode> messages )
+{
+	fMessages = messages;
+
+	// 窗口消息区填充数据
+}
+
+void JC_SquareWidget::addMessage( MessageNode message )
+{
+	fMessages.append( message );
+
+	// 窗口消息区添加一条数据
+}
+
+void JC_SquareWidget::dealShow()
+{
+	/* 原始数据清空 */
+
+	/* 从数据库中重新读取信息填充到对话框 */
+
+	/* 显示窗口 */
+	show();
+}
+
+void JC_SquareWidget::dealSendOut()
+{
+	QString txt = fTxtInputWindow->toPlainText();
+	if ( txt.isEmpty() )
+		return;
+
+	
 }

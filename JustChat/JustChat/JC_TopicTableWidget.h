@@ -7,10 +7,8 @@
 #include <QPushButton>
 
 class JC_HomeDialog;
-/*
- * 功能: 负责显示主题列表
- * 
- */
+class JC_TopicWidget;
+
 class JC_TopicTableWidget : public QWidget
 {
 	Q_OBJECT
@@ -21,13 +19,11 @@ public:
 	public slots:
 	void dealShow();
 	void dealShowTopic();
-signals:
-	void sigViewTopic( qint32 id );
 private:
 	QWidget *fCurWidget;
 	QTableWidget *fTopicTableWidget;
 	QPushButton *fBtnView;
-	QPushButton *fBtnClose;
+	//QPushButton *fBtnClose;
 	QPushButton *fBtnBack;
 	JC_TopicWidget *fTopicWidget;
 	JC_HomeDialog *fHome;

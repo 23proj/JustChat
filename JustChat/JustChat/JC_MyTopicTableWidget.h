@@ -6,6 +6,7 @@
 #include <QPushButton>
 
 class JC_HomeDialog;
+class JC_TopicWidget;
 
 class JC_MyTopicTableWidget : public QWidget
 {
@@ -17,11 +18,11 @@ public:
 	public slots:
 	void dealShow();
 	void dealShowTopic();
-signals:
-	void sigViewTopic( qint32 id );
 private:
+	QWidget *fCurWidget;
 	QTableWidget *fTopicTableWidget;
 	QPushButton *fBtnView;
-	QPushButton *fBtnClose;
+	QPushButton *fBtnBack;
+	JC_TopicWidget *fTopicWidget;
 	JC_HomeDialog *fHome;
 };

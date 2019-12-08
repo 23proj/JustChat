@@ -7,8 +7,11 @@ JC_MyTopicTableWidget::JC_MyTopicTableWidget(QWidget *parent)
 	fHome = ( JC_HomeDialog * ) parent;
 	setWindowTitle( tr( "我的主题表格" ) );
 	fTopicTableWidget = new QTableWidget( 10, 3, this );
+	fCurWidget = fTopicTableWidget;
 	fBtnView = new QPushButton( "查看" );
-	fBtnClose = new QPushButton( "关闭" );
+	fBtnBack = new QPushButton( "返回" );
+	fTopicWidget = new JC_TopicWidget();
+	fTopicWidget->hide();
 
 	fTopicTableWidget->setHorizontalHeaderLabels( QStringList() << "id" << "标题" << "内容" );
 	fTopicTableWidget->verticalHeader()->setVisible( true );
@@ -22,19 +25,18 @@ JC_MyTopicTableWidget::JC_MyTopicTableWidget(QWidget *parent)
 	fTopicTableWidget->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );//设置垂直滚动条
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addWidget( fTopicTableWidget );
+	mainLayout->addWidget( fTopicWidget );
 	QHBoxLayout *hLayout = new QHBoxLayout;
 	hLayout->addStretch( 1 );
 	hLayout->addWidget( fBtnView );
-	hLayout->addWidget( fBtnClose );
+	hLayout->addWidget( fBtnBack );
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
 	setWindowTitle( tr( "查看我的话题" ) );
-	//setFixedSize( QSize( 600, 400 ) );
 
 	// 建立信号槽
 	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowTopic() ) );
-	connect( fBtnClose, SIGNAL( clicked() ), this, SLOT( close() ) );
-	connect( this, SIGNAL( sigViewTopic( qint32 ) ), fHome, SLOT( dealShowTopic( qint32 ) ) );
+	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
 }
 
 JC_MyTopicTableWidget::~JC_MyTopicTableWidget()
@@ -62,18 +64,27 @@ void JC_MyTopicTableWidget::dealShow()
 	}
 
 	/* 显示窗口 */
-	show();
+	fCurWidget->hide();
+	fCurWidget = fTopicTableWidget;
+	fCurWidget->show();
 }
 
 void JC_MyTopicTableWidget::dealShowTopic()
 {
 	// 获取当前选择的话题
-	if ( fTopicTableWidget->selectedItems().empty() )
+	QList<QTableWidgetItem*> items = fTopicTableWidget->selectedItems();
+	if ( items.empty() )
 	{
 		QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个主题" ) );
 		return;
 	}
-	QTableWidgetItem *curItm = fTopicTableWidget->selectedItems().front();
-	qint32 id = ( qint32 ) curItm->text().toInt();
-	emit sigViewTopic( id );
+
+	// 获取窗口信息
+	fTopicWidget->setID( ( qint32 ) items[0]->text().toInt() );
+	fTopicWidget->setTheme( items[1]->text() );
+	fTopicWidget->setDetail( items[2]->text() );
+	fTopicWidget->setReviews( QVector<ReviewNode>() ); // TODO: 填充评论数据
+	fCurWidget->hide();
+	fCurWidget = fTopicWidget;
+	fCurWidget->show();
 }
