@@ -1,9 +1,9 @@
 #pragma once
 #pragma execution_character_set("utf-8")
 
-#include <QWidget>
-#include <QMessageBox>
-#include <QString>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QString>
 #include "ui_JC_NewTopicWidget.h"
 
 class JC_HomeDialog;

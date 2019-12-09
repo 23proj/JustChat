@@ -2,7 +2,7 @@
 #pragma execution_character_set("utf-8")
 
 #include "JC_Public.h"
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include "ui_JC_GroupWidget.h"
 
 class JC_HomeDialog;

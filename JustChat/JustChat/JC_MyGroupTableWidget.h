@@ -1,9 +1,9 @@
 #pragma once
 #pragma execution_character_set("utf-8")
 
-#include <QWidget>
-#include <QTableWidget>
-#include <QPushButton>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QPushButton>
 
 class JC_HomeDialog;
 class JC_GroupWidget;

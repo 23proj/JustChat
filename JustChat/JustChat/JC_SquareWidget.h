@@ -2,12 +2,12 @@
 #pragma execution_character_set("utf-8")
 
 #include "JC_Public.h"
-#include <QWidget>
-#include <QListWidget>
-#include <QPushButton>
-#include <QLabel>
-#include <QTextEdit>
-#include <QLayout>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QLayout>
 
 class JC_HomeDialog;
 
