@@ -1,7 +1,7 @@
 #pragma once
-#include <QString>
-#include <QVector>
-#include <QMap>
+#include <QtCore/QString>
+#include <QtCore/QVector>
+#include <QtCore/QMap>
 
 // 消息节点
 struct MessageNode

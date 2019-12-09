@@ -2,8 +2,8 @@
 #pragma execution_character_set("utf-8")
 
 #include "JC_Public.h"
-#include <QWidget>
-#include <QVector>
+#include <QtWidgets/QWidget>
+#include <QtCore/QVector>
 #include "ui_JC_TopicWidget.h"
 
 class JC_HomeDialog;

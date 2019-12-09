@@ -3,8 +3,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QTabWidget>
-#include <QMap>
-#include <QStack>
+#include <QtCore/QMap>
+#include <QtCore/QStack>
 #include "JC_NewTopicWidget.h"
 #include "JC_TopicTableWidget.h"
 #include "JC_MyTopicTableWidget.h"
