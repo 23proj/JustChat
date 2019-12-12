@@ -98,6 +98,12 @@
     <QtMoc Include="JC_GroupWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="qlog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="qlog.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="JC_NewTopicWidget.ui">
