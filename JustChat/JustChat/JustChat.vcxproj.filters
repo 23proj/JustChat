@@ -66,6 +66,9 @@
     <ClCompile Include="JC_Public.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qlog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="JC_HomeDialog.h">
@@ -100,9 +103,6 @@
     </QtMoc>
     <QtMoc Include="qlog.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="qlog.cpp">
-      <Filter>Source Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
