@@ -14,11 +14,12 @@ class JC_GroupWidget : public QWidget
 public:
 	JC_GroupWidget( QWidget *parent = Q_NULLPTR);
 	~JC_GroupWidget();
+	void init();
 	void setID( qint32 id ) { fId = id; }
 	void setName( QString name );
 	void setDetail( QString detail );
-	void setMessages( QVector<MessageNode> messages );
-	void addMessage( MessageNode message );
+	void setGroupMsgs( QList<GroupMsg> groupMsgs );
+	void addGroupMsg( GroupMsg groupMsg );
 	public slots:
 	void dealShow();
 	void dealSendOut();
@@ -26,5 +27,5 @@ private:
 	Ui::JC_GroupWidget ui;
 	JC_HomeDialog *fHome;
 	qint32	fId;
-	QVector<MessageNode> fMessages;
+	QList<GroupMsg> fGroupMsgs;
 };

@@ -15,6 +15,7 @@ class JC_MyGroupTableWidget : public QWidget
 public:
 	JC_MyGroupTableWidget(QWidget *parent);
 	~JC_MyGroupTableWidget();
+	void init();
 	public slots:
 	void dealShow();
 	void dealShowGroup();

@@ -6,9 +6,6 @@ JC_NewTopicWidget::JC_NewTopicWidget(QWidget *parent)
 {
 	ui.setupUi(this);
 	fHome = ( JC_HomeDialog * ) parent;
-
-	// 建立信号槽
-	connect( this->ui.btnNewTopic, SIGNAL( clicked() ), this, SLOT( dealNewTopic() ) );
 }
 
 void JC_NewTopicWidget::dealNewTopic()
@@ -36,4 +33,10 @@ void JC_NewTopicWidget::dealNewTopic()
 
 JC_NewTopicWidget::~JC_NewTopicWidget()
 {
+}
+
+void JC_NewTopicWidget::init()
+{
+	// 建立信号槽
+	connect( this->ui.btnNewTopic, SIGNAL( clicked() ), this, SLOT( dealNewTopic() ) );
 }

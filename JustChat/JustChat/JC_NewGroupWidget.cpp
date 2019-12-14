@@ -8,12 +8,18 @@ JC_NewGroupWidget::JC_NewGroupWidget(QWidget *parent)
 	fHome = ( JC_HomeDialog * ) parent;
 	ui.lstOnlinePeople->addItems( QStringList() << "匿名1" << "匿名2" << "匿名3" << "匿名4" << "匿名5" );
 
-	// 建立信号槽
-	connect( this->ui.btnNewGroup, SIGNAL( clicked() ), this, SLOT( dealNewGroup() ) );
+	
 }
 
 JC_NewGroupWidget::~JC_NewGroupWidget()
 {
+}
+
+
+void JC_NewGroupWidget::init()
+{
+	// 建立信号槽
+	connect( this->ui.btnNewGroup, SIGNAL( clicked() ), this, SLOT( dealNewGroup() ) );
 }
 
 void JC_NewGroupWidget::dealNewGroup()

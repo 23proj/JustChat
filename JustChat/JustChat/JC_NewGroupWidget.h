@@ -13,6 +13,7 @@ class JC_NewGroupWidget : public QWidget
 public:
 	JC_NewGroupWidget(QWidget *parent = Q_NULLPTR);
 	~JC_NewGroupWidget();
+	void init();
 	public slots:
 	void dealNewGroup();
 private:

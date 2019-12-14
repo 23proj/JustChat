@@ -5,22 +5,22 @@
 
 // 在线广播消息
 {
-	"type": msgOnline,
-	"id": "Bd23J23Iueh4342dsa", // 18位随机码[0-9a-zA-Z]
-	"ip": "222.222.222.222"
+	"type": ONLINE_MSG,
+	"user_id": "Bd23J23Iueh4342dsa", // 18位随机码[0-9a-zA-Z]
+	"user_ip": "222.222.222.222"
 };
 
 // 离线广播消息
 {
-	"type": msgOffline,
-	"id": "Bd23J23Iueh4342dsa",
-	"ip": "222.222.222.222"
+	"type": OFFLINE_MSG,
+	"user_id": "Bd23J23Iueh4342dsa",
+	"user_ip": "222.222.222.222"
 };
 
 // 广场聊天消息
 {
-	"type": msgSquareMessage,
-	"id": "23Jerk34FG4fdGV", // 15位随机码[0-9a-zA-Z]
+	"type": SQUARE_MSG,
+	"msg_id": "23Jerk34FG4fdGV", // 15位随机码[0-9a-zA-Z]
 	"user_id": "Bd23J23Iueh4342dsa",
 	"type_id": "", // 广场聊天则空
 	"data": "这是广场聊天的消息"
@@ -28,26 +28,26 @@
 
 // 群组聊天消息
 {
-	"type": msgGroupMessage,
-	"id": "sfd3rk34FG434fs",
+	"type": GROUP_MSG,
+	"msg_id": "sfd3rk34FG434fs",
 	"user_id": "Bd23J23Iueh4342dsa",
-	"type_id": "fi23J9Sfe98", 		// 群组聊天则为10位随机码[0-9a-zA-Z]
+	"group_id": "fi23J9Sfe98", 		// 群组聊天则为10位随机码[0-9a-zA-Z]
 	"data": "这是群组聊天的消息"
 };
 
 // 话题评论消息
 {
-	"type": msgReviewMessage,
-	"id": "df32fwg5SfFFF3a",
+	"type": TOPIC_MSG,
+	"msg_id": "df32fwg5SfFFF3a",
 	"user_id": "Bd23J23Iueh4342dsa",
-	"type_id": "I23222jfeuk", 		// 群组聊天则为10位随机码[0-9a-zA-Z]
+	"topic_id": "I23222jfeuk", 		// 群组聊天则为10位随机码[0-9a-zA-Z]
 	"data": "这是话题评论的消息"
 };
 
 // 建立主题消息
 {
-	"type": msgNewTopic,
-	"id": "fffwer31Wd2",
+	"type": NEW_TOPIC_MSG,
+	"topic_id": "fffwer31Wd2",
 	"user_id": "Bd23J23Iueh4342dsa",
 	"theme": "电影推荐",
 	"detail": "大家有没有好看的电影推荐啊,动作类,科幻类的都可以呀!"
@@ -55,24 +55,24 @@
 
 // 建立群组消息
 {
-	"type": msgNewGroup,
-	"id": "FW2Srr42dff",
+	"type": NEW_GROUP_MSG,
+	"group_id": "FW2Srr42dff",
 	"user_id": "Bd23J23Iueh4342dsa",
 	"name": "户外运动小组",
 	"intro": "专注于户外运动50年,欢迎大家加入组聊哦!",
 	"member_list": 
 	[
 		{
-			"id": "d33Wkfjie324Hi7dda", // 18位随机码[0-9a-zA-Z]
-			"ip": "222.222.222.220"
+			"user_id": "d33Wkfjie324Hi7dda", // 18位随机码[0-9a-zA-Z]
+			"user_ip": "222.222.222.220"
 		},
 		{
-			"id": "3jeu23hJHHHH948Gsd", // 18位随机码[0-9a-zA-Z]
-			"ip": "222.222.222.221"
+			"user_id": "3jeu23hJHHHH948Gsd", // 18位随机码[0-9a-zA-Z]
+			"user_ip": "222.222.222.221"
 		},
 		{
-			"id": "Bd23J23Iueh4342dsa", // 18位随机码[0-9a-zA-Z]
-			"ip": "222.222.222.222"
+			"user_id": "Bd23J23Iueh4342dsa", // 18位随机码[0-9a-zA-Z]
+			"user_ip": "222.222.222.222"
 		}
 	]
 };

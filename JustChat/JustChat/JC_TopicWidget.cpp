@@ -24,17 +24,17 @@ void JC_TopicWidget::setDetail( QString detail )
 	ui.txtDetail->setText( detail );
 }
 
-void JC_TopicWidget::setReviews( QVector<ReviewNode> reviews )
+void JC_TopicWidget::setTopicMsgs( QList<TopicMsg> topicMsgs )
 {
-	fReviews = reviews;
+	fTopicMsgs = topicMsgs;
 	
 	// 窗口评论区填充数据
 
 }
 
-void JC_TopicWidget::addReview( ReviewNode review )
+void JC_TopicWidget::addTopicMsg( TopicMsg topicMsg )
 {
-	fReviews.append( review );
+	fTopicMsgs.append( topicMsg );
 
 	// 窗口评论区添加一条评论
 }

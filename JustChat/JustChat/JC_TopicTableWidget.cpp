@@ -33,9 +33,7 @@ JC_TopicTableWidget::JC_TopicTableWidget( QWidget *parent)
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
 
-	// 建立信号槽
-	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowTopic() ) );
-	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
+	
 }
 
 void JC_TopicTableWidget::dealShow()
@@ -78,7 +76,7 @@ void JC_TopicTableWidget::dealShowTopic()
 	fTopicWidget->setID( ( qint32 ) items[0]->text().toInt() );
 	fTopicWidget->setTheme( items[1]->text() );
 	fTopicWidget->setDetail( items[2]->text() );
-	fTopicWidget->setReviews( QVector<ReviewNode>() ); // TODO: 填充评论数据
+	fTopicWidget->setTopicMsgs( QList<TopicMsg>() ); // TODO: 填充评论数据
 	fCurWidget->hide();
 	fCurWidget = fTopicWidget;
 	fCurWidget->show();
@@ -86,4 +84,11 @@ void JC_TopicTableWidget::dealShowTopic()
 
 JC_TopicTableWidget::~JC_TopicTableWidget()
 {
+}
+
+void JC_TopicTableWidget::init()
+{
+	// 建立信号槽
+	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowTopic() ) );
+	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
 }

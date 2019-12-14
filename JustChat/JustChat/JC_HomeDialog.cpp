@@ -9,7 +9,8 @@ JC_HomeDialog::JC_HomeDialog(QWidget *parent)
 	gridLayout->setContentsMargins( 11, 11, 11, 11 );
 	fMainLayout = new QHBoxLayout();
 	fMainLayout->setSpacing( 6 );
-	
+	fEventHandler = new EventHandler( this );
+
 	// 创建出7个窗口
 	fSquareWidget = new JC_SquareWidget( this );
 	fNewTopicWidget = new JC_NewTopicWidget( this );
@@ -18,6 +19,8 @@ JC_HomeDialog::JC_HomeDialog(QWidget *parent)
 	fNewGroupWidget = new JC_NewGroupWidget( this );
 	fGroupTableWidget = new JC_GroupTableWidget( this );
 	fMyGroupTableWidget = new JC_MyGroupTableWidget( this );
+	
+
 	//this->fBtnBack->setVisible( false );
 	fTabWidget = new QTabWidget( this );
 	//fTabWidget->setTabPosition( QTabWidget::East );
@@ -35,20 +38,42 @@ JC_HomeDialog::JC_HomeDialog(QWidget *parent)
 	this->setCentralWidget( centralWidget );
 	setMinimumSize( 700, 600 );
 
+}
+
+JC_HomeDialog::~JC_HomeDialog()
+{
+	// 发送离线广播
+	fEventHandler->dealSendOfflineMsg();
+}
+
+void JC_HomeDialog::init()
+{
+	// init
+	fEventHandler->init();
+	fSquareWidget->init();
+	fNewTopicWidget->init();
+	fTopicTableWidget->init();
+	fMyTopicTableWidget->init();
+	fNewGroupWidget->init();
+	fGroupTableWidget->init();
+	fMyGroupTableWidget->init();
 
 	// 建立信号槽
 	connect( fTabWidget, SIGNAL( tabBarClicked( int ) ), this, SLOT( dealShow( int ) ) );
+
+	// 发送在线广播
+	fEventHandler->dealSendOnlineMsg();
 }
 
 void JC_HomeDialog::dealShow( int idx )
 {
 	if ( idx == 0 ) // 广场
 	{
-
+		fSquareWidget->dealShow();
 	}
 	else if ( idx == 1 ) // 创建新话题
 	{
-
+		fNewTopicWidget->dealShow();
 	}
 	else if ( idx == 2 ) // 所有话题
 	{
@@ -72,4 +97,38 @@ void JC_HomeDialog::dealShow( int idx )
 	}
 }
 
+void JC_HomeDialog::dealRecvOnlineMsg( OnlineMsg onlineMsg )
+{
+	fSquareWidget->addOnlineMsg( onlineMsg );
+}
+
+void JC_HomeDialog::dealRecvOfflineMsg( OfflineMsg offlineMsg )
+{
+	fSquareWidget->addOfflineMsg( offlineMsg );
+}
+
+void JC_HomeDialog::dealRecvSquareMsg( SquareMsg squareMsg )
+{
+	fSquareWidget->addSquareMsg( squareMsg );
+}
+
+void JC_HomeDialog::dealRecvGroupMsg( GroupMsg groupMsg )
+{
+
+}
+
+void JC_HomeDialog::dealRecvTopicMsg( TopicMsg topicMsg )
+{
+
+}
+
+void JC_HomeDialog::dealRecvNewTopicMsg( NewTopicMsg newTopicMsg )
+{
+
+}
+
+void JC_HomeDialog::dealRecvNewGroupMsg( NewGroupMsg newGroupMsg )
+{
+
+}
 

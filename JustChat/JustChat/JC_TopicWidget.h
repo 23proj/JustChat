@@ -18,8 +18,8 @@ public:
 	void setID( qint32 id ) { fId = id; }
 	void setTheme( QString theme );
 	void setDetail( QString detail );
-	void setReviews( QVector<ReviewNode> reviews );
-	void addReview( ReviewNode review );
+	void setTopicMsgs( QList<TopicMsg> topicMsgs );
+	void addTopicMsg( TopicMsg topicMsg );
 	public slots:
 	void dealShow();
 	void dealSendOut();
@@ -27,5 +27,5 @@ private:
 	Ui::JC_TopicWidget ui;
 	JC_HomeDialog *fHome;
 	qint32	fId;
-	QVector<ReviewNode> fReviews;
+	QList<TopicMsg> fTopicMsgs;
 };

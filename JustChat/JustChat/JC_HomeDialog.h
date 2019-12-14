@@ -14,15 +14,26 @@
 #include "JC_TopicWidget.h"
 #include "JC_GroupWidget.h"
 #include "JC_SquareWidget.h"
+#include "EventHandler.h"
 
 class JC_HomeDialog : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	JC_HomeDialog(QWidget *parent = Q_NULLPTR);
+	EventHandler *fEventHandler;
+	JC_HomeDialog( QWidget *parent = Q_NULLPTR );
+	~JC_HomeDialog();
+	void init();
 	public slots:
 	void dealShow( int idx);
+	void dealRecvOnlineMsg( OnlineMsg onlineMsg );
+	void dealRecvOfflineMsg( OfflineMsg offlineMsg );
+	void dealRecvSquareMsg( SquareMsg squareMsg );
+	void dealRecvGroupMsg( GroupMsg groupMsg );
+	void dealRecvTopicMsg( TopicMsg topicMsg );
+	void dealRecvNewTopicMsg( NewTopicMsg newTopicMsg );
+	void dealRecvNewGroupMsg( NewGroupMsg newGroupMsg );
 private:
 	JC_NewTopicWidget    *fNewTopicWidget;
 	JC_TopicTableWidget   *fTopicTableWidget;

@@ -69,6 +69,12 @@
     <ClCompile Include="qlog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="data_transmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="JC_HomeDialog.h">
@@ -102,6 +108,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="qlog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="data_transmitter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="EventHandler.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

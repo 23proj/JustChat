@@ -7,15 +7,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <QDebug>
-#include <QMessageBox>
-#include <QFile>
-#include <QFileInfo>
-#include <QThread>
-#include <QList>
-#include <QSemaphore>
-#include <QMutex>
-#include <QDateTime>
+#include <QtCore/QDebug>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QThread>
+#include <QtCore/QList>
+#include <QtCore/QSemaphore>
+#include <QtCore/QMutex>
+#include <QtCore/QDateTime>
 
 
 

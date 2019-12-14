@@ -16,6 +16,7 @@ class JC_TopicTableWidget : public QWidget
 public:
 	JC_TopicTableWidget( QWidget *parent);
 	~JC_TopicTableWidget();
+	void init();
 	public slots:
 	void dealShow();
 	void dealShowTopic();

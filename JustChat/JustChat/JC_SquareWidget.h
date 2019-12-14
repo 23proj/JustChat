@@ -10,7 +10,7 @@
 #include <QtWidgets/QLayout>
 
 class JC_HomeDialog;
-
+class EventHandler;
 class JC_SquareWidget : public QWidget
 {
 	Q_OBJECT
@@ -18,16 +18,19 @@ class JC_SquareWidget : public QWidget
 public:
 	JC_SquareWidget(QWidget *parent = Q_NULLPTR);
 	~JC_SquareWidget();
-	void setMessages( QVector<MessageNode> messages );
-	void addMessage( MessageNode message );
+	void init();
+	void setSquareMsgs( QList<SquareMsg> squareMsgs );
+	void addSquareMsg( SquareMsg squareMsg );
+	void addOnlineMsg( OnlineMsg onlineMsg );
+	void addOfflineMsg( OfflineMsg offlineMsg );
 	public slots:
 	void dealShow();
-	void dealSendOut();
+	void dealSendSquareMsg();
 private:
 	JC_HomeDialog *fHome;
 	QListWidget *fLstMsgWindow;
 	QTextEdit *fTxtInputWindow;
 	QPushButton *fBtnSendOut;
 	QLabel *fOnlineCount;
-	QVector<MessageNode> fMessages;
+	EventHandler *fEventHandler;
 };

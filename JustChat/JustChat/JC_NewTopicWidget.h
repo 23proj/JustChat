@@ -15,6 +15,7 @@ class JC_NewTopicWidget : public QWidget
 public:
 	JC_NewTopicWidget(QWidget *parent = Q_NULLPTR);
 	~JC_NewTopicWidget();
+	void init();
 	public slots:
 	void dealNewTopic();
 private:

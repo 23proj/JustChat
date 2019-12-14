@@ -9,11 +9,15 @@ JC_GroupWidget::JC_GroupWidget( QWidget *parent)
 	fHome = ( JC_HomeDialog * ) parent;
 	//fId = id;
 
-	connect( ui.btnSendOut, SIGNAL( clicked() ), this, SLOT( dealSendOut() ) );
 }
 
 JC_GroupWidget::~JC_GroupWidget()
 {
+}
+
+void JC_GroupWidget::init()
+{
+	connect( ui.btnSendOut, SIGNAL( clicked() ), this, SLOT( dealSendOut() ) );
 }
 
 void JC_GroupWidget::setName( QString name )
@@ -26,17 +30,17 @@ void JC_GroupWidget::setDetail( QString detail )
 	//ui.txtDetail->setText( detail );
 }
 
-void JC_GroupWidget::setMessages( QVector<MessageNode> messages )
+void JC_GroupWidget::setGroupMsgs( QList<GroupMsg> groupMsgs )
 {
-	fMessages = messages;
+	fGroupMsgs = groupMsgs;
 
 	// 窗口消息区填充数据
 
 }
 
-void JC_GroupWidget::addMessage( MessageNode message )
+void JC_GroupWidget::addGroupMsg( GroupMsg groupMsg )
 {
-	fMessages.append( message );
+	fGroupMsgs.append( groupMsg );
 
 	// 窗口消息区添加一条数据
 }

@@ -34,13 +34,17 @@ JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
 
-	// 建立信号槽
-	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowGroup() ) );
-	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
 }
 
 JC_GroupTableWidget::~JC_GroupTableWidget()
 {
+}
+
+void JC_GroupTableWidget::init()
+{
+	// 建立信号槽
+	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowGroup() ) );
+	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
 }
 
 void JC_GroupTableWidget::dealShow()
@@ -86,7 +90,7 @@ void JC_GroupTableWidget::dealShowGroup()
 	fGroupWidget->setID( ( qint32 ) items[0]->text().toInt() );
 	fGroupWidget->setName( items[1]->text() );
 	fGroupWidget->setDetail( items[2]->text() );
-	fGroupWidget->setMessages( QVector<MessageNode>() ); // TODO: 填充评论数据
+	fGroupWidget->setGroupMsgs( QList<GroupMsg>() ); // TODO: 填充群组消息数据
 	fCurWidget->hide();
 	fCurWidget = fGroupWidget;
 	fCurWidget->show();

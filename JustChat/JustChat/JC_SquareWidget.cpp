@@ -1,9 +1,13 @@
 #include "JC_SquareWidget.h"
+#include "JC_HomeDialog.h"
+#include "EventHandler.h"
 
 JC_SquareWidget::JC_SquareWidget(QWidget *parent)
 	: QWidget(nullptr)
 {
 	fHome = ( JC_HomeDialog * ) parent;
+	fEventHandler = fHome->fEventHandler;
+
 	QVBoxLayout *showArea = new QVBoxLayout( this );
 	showArea->setSpacing( 6 );
 	showArea->setContentsMargins( 11, 11, 11, 11 );
@@ -43,26 +47,44 @@ JC_SquareWidget::JC_SquareWidget(QWidget *parent)
 
 	horizontalLayout->addWidget( fBtnSendOut );
 	showArea->addLayout( horizontalLayout );
-
-	connect( fBtnSendOut, SIGNAL( clicked() ), this, SLOT( dealSendOut() ) );
 }
 
 JC_SquareWidget::~JC_SquareWidget()
 {
 }
 
-void JC_SquareWidget::setMessages( QVector<MessageNode> messages )
+void JC_SquareWidget::init()
 {
-	fMessages = messages;
+	connect( fBtnSendOut, SIGNAL( clicked() ), this, SLOT( dealSendSquareMsg() ) );
+}
 
+void JC_SquareWidget::setSquareMsgs( QList<SquareMsg> squareMsgs )
+{
 	// 窗口消息区填充数据
 }
 
-void JC_SquareWidget::addMessage( MessageNode message )
+void JC_SquareWidget::addSquareMsg( SquareMsg squareMsg )
 {
-	fMessages.append( message );
-
 	// 窗口消息区添加一条数据
+	QString squareMsgStr =
+		"type:" + QString::number( squareMsg.type ) + "," +
+		"msg_id:" + squareMsg.msg_id + "," +
+		"user_id:" + squareMsg.user_id + "," +
+		"data:" + squareMsg.data;
+	fLstMsgWindow->addItem( squareMsgStr );
+}
+
+void JC_SquareWidget::addOnlineMsg( OnlineMsg onlineMsg )
+{
+	// 窗口消息区添加一条在线数据
+	QString onlineMsgStr = "用户" + onlineMsg.user_id + "(" + onlineMsg.user_ip + ") 已上线";
+	fLstMsgWindow->addItem( onlineMsgStr );
+}
+
+void JC_SquareWidget::addOfflineMsg( OfflineMsg offlineMsg )
+{
+	// 窗口消息区添加一条下线数据
+	QString offlineMsgStr = "用户" + offlineMsg.user_id + "(" + offlineMsg.user_ip + ") 已下线";
 }
 
 void JC_SquareWidget::dealShow()
@@ -75,11 +97,15 @@ void JC_SquareWidget::dealShow()
 	show();
 }
 
-void JC_SquareWidget::dealSendOut()
+void JC_SquareWidget::dealSendSquareMsg()
 {
 	QString txt = fTxtInputWindow->toPlainText();
 	if ( txt.isEmpty() )
 		return;
-
 	
+	// 后台处理
+	fEventHandler->dealSendSquareMsg( txt );
+
+	// 前台处理
+	fTxtInputWindow->clear();
 }
