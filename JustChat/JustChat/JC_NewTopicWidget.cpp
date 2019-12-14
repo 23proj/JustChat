@@ -8,6 +8,16 @@ JC_NewTopicWidget::JC_NewTopicWidget(QWidget *parent)
 	fHome = ( JC_HomeDialog * ) parent;
 }
 
+void JC_NewTopicWidget::dealShow()
+{
+	/* 原始数据清空 */
+
+	/* 从数据库中重新读取信息填充到对话框 */
+
+	/* 显示窗口 */
+	show();
+}
+
 void JC_NewTopicWidget::dealNewTopic()
 {
 	// 合法性检查

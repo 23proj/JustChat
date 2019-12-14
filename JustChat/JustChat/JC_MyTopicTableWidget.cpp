@@ -86,7 +86,7 @@ void JC_MyTopicTableWidget::dealShowTopic()
 	fTopicWidget->setID( ( qint32 ) items[0]->text().toInt() );
 	fTopicWidget->setTheme( items[1]->text() );
 	fTopicWidget->setDetail( items[2]->text() );
-	fTopicWidget->setTopicMsgs( QList<TopicMsg>() ); // TODO: 填充评论数据
+	fTopicWidget->setCommentMsgs( QList<CommentMsg>() ); // TODO: 填充评论数据
 	fCurWidget->hide();
 	fCurWidget = fTopicWidget;
 	fCurWidget->show();

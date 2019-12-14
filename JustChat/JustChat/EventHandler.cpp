@@ -1,12 +1,11 @@
 #include "EventHandler.h"
 #include "JC_HomeDialog.h"
 
-
-EventHandler::EventHandler(QObject *parent)
-	: QObject(parent)
-{
-	fHome = ( JC_HomeDialog * ) parent;
+EventHandler::EventHandler(QObject *parent): QObject(parent){
 	fTransmitter = new DataTransmitter;
+	fTransmitter->init();
+	
+	isAlone_ = true;
 }
 
 EventHandler::~EventHandler()
@@ -22,7 +21,7 @@ void EventHandler::init()
 	connect( this, &EventHandler::sigRecvOfflineMsg, fHome, &JC_HomeDialog::dealRecvOfflineMsg );
 	connect( this, &EventHandler::sigRecvSquareMsg, fHome, &JC_HomeDialog::dealRecvSquareMsg );
 	connect( this, &EventHandler::sigRecvGroupMsg, fHome, &JC_HomeDialog::dealRecvGroupMsg );
-	connect( this, &EventHandler::sigRecvTopicMsg, fHome, &JC_HomeDialog::dealRecvTopicMsg );
+	connect( this, &EventHandler::sigRecvCommentMsg, fHome, &JC_HomeDialog::dealRecvCommentMsg );
 	connect( this, &EventHandler::sigRecvNewTopicMsg, fHome, &JC_HomeDialog::dealRecvNewTopicMsg );
 	connect( this, &EventHandler::sigRecvNewGroupMsg, fHome, &JC_HomeDialog::dealRecvNewGroupMsg );
 }
@@ -38,7 +37,6 @@ bool EventHandler::saveData()
 
 	return true;
 }
-
 
 void EventHandler::addOnlineMsg( OnlineMsg onlineMsg )
 {
@@ -76,9 +74,14 @@ void EventHandler::setSquareMsgs( QList<SquareMsg> squareMsgs )
 	fSquareMsgs = squareMsgs;
 }
 
-QByteArray EventHandler::createOnlineMsg(  )
+QByteArray EventHandler::createOnlineMsg( )
 {
 	return QJsonDocument( QJsonObject( { { "type",ONLINE_MSG },{ "user_id",fUserID } } ) ).toJson();
+}
+
+QByteArray EventHandler::createReplyOnlineMsg()
+{
+	return QJsonDocument( QJsonObject( { { "type",REPLY_ONLINE_MSG },{ "user_id",fUserID } } ) ).toJson();
 }
 
 QByteArray EventHandler::createOfflineMsg(  )
@@ -98,10 +101,10 @@ QByteArray EventHandler::createGroupMsg( QString group_id, QString data )
 	return QJsonDocument( QJsonObject( { { "type",GROUP_MSG },{ "msg_id",msg_id },{ "user_id",fUserID },{ "group_id",group_id },{ "data",data } } ) ).toJson();
 }
 
-QByteArray EventHandler::createTopicMsg( QString topic_id, QString data )
+QByteArray EventHandler::createCommentMsg( QString topic_id, QString data )
 {
 	QString msg_id = generate_id( MESSAGE_ID_LEN );
-	return QJsonDocument( QJsonObject( { { "type",TOPIC_MSG },{ "msg_id",msg_id },{ "user_id",fUserID },{ "topic_id",topic_id },{ "data",data } } ) ).toJson();
+	return QJsonDocument( QJsonObject( { { "type",COMMENT_MSG },{ "msg_id",msg_id },{ "user_id",fUserID },{ "topic_id",topic_id },{ "data",data } } ) ).toJson();
 }
 
 QByteArray EventHandler::createNewTopicMsg( QString theme, QString detail )
@@ -132,17 +135,24 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	case ONLINE_MSG:
 	{
 		// 后台处理
-
-		// 前端处理
 		OnlineMsg onlineMsg;
 		onlineMsg.type = ONLINE_MSG;
 		onlineMsg.user_id = jsonObj.value( "user_id" ).toString();
 		onlineMsg.user_ip = *senderIp;
+		//saveData(user_id, user_ip);
+		ipList_.append(senderIp);
+		// 回复自己的信息
+		QByteArray replyOnlineJson = createReplyOnlineMsg();
+		fTransmitter->UdpSendP2P( replyOnlineJson, *senderIp);
+
+		// 前端处理
 		if ( onlineMsg.user_id == fUserID )
 			fUserIP = *senderIp;
 		else
 		{
+			// 保存别人的信息
 			addOnlineMsg( onlineMsg );
+			// 发送给前端
 			emit sigRecvOnlineMsg( onlineMsg );
 		}
 		break;
@@ -193,18 +203,18 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 		emit sigRecvGroupMsg( groupMsg );
 		break;
 	}
-	case TOPIC_MSG:
+	case COMMENT_MSG:
 	{
 		// 后台处理
 
 		// 前端处理
-		TopicMsg topicMsg;
-		topicMsg.type = TOPIC_MSG;
-		topicMsg.msg_id = jsonObj.value( "msg_id" ).toString();
-		topicMsg.user_id = jsonObj.value( "user_id" ).toString();
-		topicMsg.topic_id = jsonObj.value( "topic_id" ).toString();
-		topicMsg.data = jsonObj.value( "data" ).toString();
-		emit sigRecvTopicMsg( topicMsg );
+		CommentMsg commentMsg;
+		commentMsg.type = COMMENT_MSG;
+		commentMsg.msg_id = jsonObj.value( "msg_id" ).toString();
+		commentMsg.user_id = jsonObj.value( "user_id" ).toString();
+		commentMsg.topic_id = jsonObj.value( "topic_id" ).toString();
+		commentMsg.data = jsonObj.value( "data" ).toString();
+		emit sigRecvCommentMsg( commentMsg );
 		break;
 	}
 	case NEW_TOPIC_MSG:
@@ -236,6 +246,44 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 		emit sigRecvNewGroupMsg( newGroupMsg );
 		break;
 	}
+	case REPLY_ONLINE_MSG: {
+		// 保存别人的信息
+		ReplyOnlineMsg replyOnlineMsg;
+		replyOnlineMsg.type = REPLY_ONLINE_MSG;
+		replyOnlineMsg.user_id = jsonObj.value( "user_id" ).toString();
+		replyOnlineMsg.user_ip = *senderIp;
+		ipList_.append( senderIp );
+		if(!saveData(user_id, user_ip)) 
+			isAlone_ = false;
+		break;
+	}
+	case USER_INFO: {
+		// 收到某人的三张表和评论,更新本地数据,显示在界面
+		break;
+	}
+	case TOPIC_INFO: {
+		// 收到请求用户的三张表和评论, 更新本地数据, 显示在界面
+		break;
+	}
+	case GROUP_INFO: {
+		// 收到请求用户的三张表和评论, 更新本地数据, 显示在界面
+		break;
+	}
+	case COMMENT_INFO: {
+		// 收到请求用户的三张表和评论, 更新本地数据, 显示在界面
+		break;
+	}
+	case REQUEST_INFO: {
+		QByteArray User;
+		QByteArray Topic;
+		QByteArray Group;
+		QByteArray Comment;
+		if (LoadData(User, USER_INFO)) fTransmitter->TcpSendP2P(User, *senderIp);
+		if (LoadData(Topic, TOPIC_INFO)) fTransmitter->TcpSendP2P(Topic, *senderIp);
+		if (LoadData(Group, GROUP_INFO)) fTransmitter->TcpSendP2P(Group, *senderIp);
+		if (LoadData(Comment, COMMENT_INFO)) fTransmitter->TcpSendP2P(Comment, *senderIp);
+		break;
+	}
 	default:
 		break;
 	}
@@ -251,6 +299,8 @@ void EventHandler::dealSendOnlineMsg()
 	}
 	QByteArray onlineJson = createOnlineMsg();
 	fTransmitter->UdpSendBroadcast( onlineJson );
+	// 启动定时器
+	QTimer::singleShot(waitForReply_, this, &EventHandler::OnlineReplyTimeout);
 }
 
 void EventHandler::dealSendOfflineMsg()
@@ -279,9 +329,9 @@ void EventHandler::dealSendGroupMsg( QString group_id, QString data )
 	}
 }
 
-void EventHandler::dealSendTopicMsg( QString topic_id, QString data )
+void EventHandler::dealSendCommentMsg( QString topic_id, QString data )
 {
-	QByteArray topicMsgJson = createTopicMsg( topic_id, data );
+	QByteArray commentMsgJson = createCommentMsg( topic_id, data );
 	// TODO:
 }
 
@@ -295,4 +345,42 @@ void EventHandler::dealSendNewGroupMsg( QString name, QString intro, QString mem
 {
 	QByteArray newGroupMsgJson = createNewGroupMsg( name, intro, member_id_list );
 	// TODO:
+}
+
+void EventHandler::OnlineReplyTimeout() {
+	if (0 == ipList_.size()) return;
+
+	if (isAlone_) {  // 孤独节点，先发送自己的再请求别人的
+		QByteArray User;
+		QByteArray Topic;
+		QByteArray Group;
+		QByteArray Comment;
+		bool hasUser = LoadData(User, USER_INFO);
+		bool hasTopic = LoadData(Topic, TOPIC_INFO);
+		bool hasGroup = LoadData(Group, GROUP_INFO);
+		bool hasComment = false;
+		if (hasTopic)  hasComment = LoadData(Comment, COMMENT_INFO);
+
+		// 向在线用户发送自己知道的用户信息、话题、组聊、评论
+		for (auto& i : ipList_) {
+			if (hasUser) fTransmitter->TcpSendP2P(User, *i);
+			if (hasTopic) fTransmitter->TcpSendP2P(Topic, *i);
+			if (hasGroup) fTransmitter->TcpSendP2P(Group, *i);
+			if (hasComment) fTransmitter->TcpSendP2P(Comment, *i);
+		}
+	}
+	// 向一人请求他知道的用户信息、话题、组聊、评论
+	QByteArray requestInfo;
+	CreateRequestInfoMsg(requestInfo);
+	fTransmitter->UdpSendP2P(requestInfo, *ipList_[0]);
+}
+
+bool EventHandler::saveData(QString &id, QString &ip)
+{
+	return false;
+}
+
+bool EventHandler::LoadData(QByteArray &data, int type) {
+}
+bool EventHandler::LoadIpList(QList<QString* > &ipList) {
 }

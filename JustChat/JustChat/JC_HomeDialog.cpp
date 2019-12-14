@@ -85,7 +85,7 @@ void JC_HomeDialog::dealShow( int idx )
 	}
 	else if ( idx == 4 ) // 创建新组聊
 	{
-
+		fNewGroupWidget->dealShow();
 	}
 	else if ( idx == 5 ) // 已有组聊
 	{
@@ -117,7 +117,7 @@ void JC_HomeDialog::dealRecvGroupMsg( GroupMsg groupMsg )
 
 }
 
-void JC_HomeDialog::dealRecvTopicMsg( TopicMsg topicMsg )
+void JC_HomeDialog::dealRecvCommentMsg( CommentMsg commentMsg )
 {
 
 }

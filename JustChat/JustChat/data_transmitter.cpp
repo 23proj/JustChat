@@ -5,18 +5,8 @@ DataTransmitter::DataTransmitter(QObject* parent):QObject(parent){
 	// UDP
 	sendUdpSocket_ = new QUdpSocket;
 	recvUdpSocket_ = new QUdpSocket;
-	if ( !sendUdpSocket_->bind( QHostAddress::LocalHost, sendUdpPort_ ) )
-	{
-		// 需要换成日志打印调试信息
-		std::cout << "send UdpSocket启动，监听端口失败！\n";
-		sendUdpSocket_->close();
-	}
-	if ( !recvUdpSocket_->bind( QHostAddress::LocalHost, recvUdpPort_ ) )
-	{
-		// 需要换成日志打印调试信息
-		std::cout << "recv UdpSocket启动，监听端口失败！\n";
-		recvUdpSocket_->close();
-	}
+	sendUdpSocket_->bind(QHostAddress::LocalHost, sendUdpPort_);
+	recvUdpSocket_->bind(QHostAddress::LocalHost, recvUdpPort_);
 	
 	// TCP
 	sendTcpSocket_ = new QTcpSocket;
@@ -36,12 +26,11 @@ DataTransmitter::~DataTransmitter() {
 	}
 };
 
-void DataTransmitter::init()
-{
-	QObject::connect( recvUdpSocket_, &QUdpSocket::readyRead,
-					  this, &DataTransmitter::UdpReadyReadSlot );
-	QObject::connect( this, &DataTransmitter::TcpReadyRead, this,
-					  &DataTransmitter::TcpReadyReadSlot );
+void DataTransmitter::init() {
+	QObject::connect(recvUdpSocket_, &QUdpSocket::readyRead,
+		this, &DataTransmitter::UdpReadyReadSlot);
+	QObject::connect(this, &DataTransmitter::TcpReadyRead, this,
+		&DataTransmitter::TcpReadyReadSlot);
 }
 
 void DataTransmitter::NewListen() {
@@ -69,29 +58,20 @@ void DataTransmitter::incomingConnection(qintptr socketHandle) {
 		void{ emit TcpReadyRead(socketHandle); });
 }
 
-bool DataTransmitter::UdpSendP2P(const QByteArray &data, const QString &receiverIp) {
-	qint64 ret = sendUdpSocket_->writeDatagram(data, QHostAddress(receiverIp), recvUdpPort_);
-	if ( ret == -1 )
-	{
-		return false;
-	}
-	return true;
+void DataTransmitter::UdpSendP2P(const QByteArray &data, const QString &receiverIp) {
+	sendUdpSocket_->writeDatagram(data, QHostAddress(receiverIp), recvUdpPort_);
 }
 
-bool DataTransmitter::UdpSendBroadcast(const QByteArray &data) {
-	qint64 ret = sendUdpSocket_->writeDatagram(data, QHostAddress::Broadcast, recvUdpPort_);
-	if ( ret == -1 )
-	{
-		return false;
-	}
-	return true;
+void DataTransmitter::UdpSendBroadcast(const QByteArray &data) {
+	sendUdpSocket_->writeDatagram(data, QHostAddress::Broadcast, recvUdpPort_);
 }
 
 void DataTransmitter::UdpReadyReadSlot() {
 	QNetworkDatagram dataGram = recvUdpSocket_->receiveDatagram();
 	QByteArray* data = new QByteArray(dataGram.data());
 	QString* senderIp = new QString(dataGram.senderAddress().toString());
-	emit UdpReceive(data, senderIp);
+	// 自己发来的就跳过
+	if(!IsSelf(*senderIp)) emit UdpReceive(data, senderIp);
 }
 
 void DataTransmitter::TcpSendP2P(const QByteArray &data, const QString &receiverIp) {
@@ -185,14 +165,18 @@ void DataTransmitter::TcpReadyReadSlot(qintptr socketHandle) {
 	}
 }
 
+bool DataTransmitter::IsSelf(QString& ip) {
+	QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+	for (auto& i : ipAddressesList) 
+		if (ip == i.toString()) return true;
+	return false;
+}
+
 void DataTransmitter::PrintIp() {
 	QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-	for (int i = 0; i < ipAddressesList.size(); ++i) {
-		if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-			ipAddressesList.at(i).toIPv4Address()) {
-			std::cout << ipAddressesList.at(i).toString().toStdString() << std::endl;
-		}
-	}
+	for (auto& i : ipAddressesList)
+		if (i != QHostAddress::LocalHost && i.toIPv4Address()) 
+			std::cout << i.toString().toStdString() << std::endl;
 	/*
 	169.254.24.189
 	169.254.252.28

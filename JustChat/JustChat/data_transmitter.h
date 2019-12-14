@@ -2,7 +2,7 @@
 #ifndef _DATA_TRANSMITTER_H_
 #define _DATA_TRANSMITTER_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <QUdpSocket>
 #include <QTcpSocket>
 #include <QTcpServer>
@@ -23,6 +23,7 @@ private:
 	QUdpSocket* recvUdpSocket_;   // 专管接收的udpsocket
 	const qint16 sendUdpPort_ = 6666;
 	const qint16 recvUdpPort_ = 7777;
+	bool IsSelf(QString& ip);     // Udp广播是否是自己发的
 
 	// TCP
 	QTcpSocket* sendTcpSocket_;   // 专管发送的tcpsocket
@@ -35,8 +36,8 @@ private:
 	const qint16 sendTcpPort_ = 8888;
 	const qint16 recvTcpPort_ = 9999;
 	QTcpServer* tcpServer_;
-	void NewListen();   // 监听端口
 	static const int bufSize_ = 1024;  // 按此大小的块接收发送
+	void NewListen();   // 监听端口
 
 protected:
 	// 重写，tcpServer有连接到来自动调用，若不超过最大连接数
@@ -59,22 +60,23 @@ signals:
 public slots:
 	void UdpReadyReadSlot();     // Udp接收内容
 	void TcpReadyReadSlot(qintptr socketHandle);     // Tcp接收内容
+
 public:
 	DataTransmitter(QObject* parent = 0);
 	~DataTransmitter();
-	void init();
+	void init();  // 用于connect
 
 	/* 
 	功能说明：Udp点对点发送
 	传入参数：data - 需要传输的数据包、receiverIp - 传输目标Ip地址
 	*/
-	bool UdpSendP2P(const QByteArray &data, const QString &receiverIp);
+	void UdpSendP2P(const QByteArray &data, const QString &receiverIp);
 
 	/*
 	功能说明：Udp局域网内广播发送
 	传入参数：data - 需要传输的数据包
 	*/
-	bool UdpSendBroadcast(const QByteArray &data);
+	void UdpSendBroadcast(const QByteArray &data);
 
 	/*
 	功能说明：Tcp点对点发送

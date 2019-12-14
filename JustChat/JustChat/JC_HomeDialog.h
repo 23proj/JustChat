@@ -31,7 +31,7 @@ public:
 	void dealRecvOfflineMsg( OfflineMsg offlineMsg );
 	void dealRecvSquareMsg( SquareMsg squareMsg );
 	void dealRecvGroupMsg( GroupMsg groupMsg );
-	void dealRecvTopicMsg( TopicMsg topicMsg );
+	void dealRecvCommentMsg( CommentMsg commentMsg );
 	void dealRecvNewTopicMsg( NewTopicMsg newTopicMsg );
 	void dealRecvNewGroupMsg( NewGroupMsg newGroupMsg );
 private:

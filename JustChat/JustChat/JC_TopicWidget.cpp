@@ -24,17 +24,17 @@ void JC_TopicWidget::setDetail( QString detail )
 	ui.txtDetail->setText( detail );
 }
 
-void JC_TopicWidget::setTopicMsgs( QList<TopicMsg> topicMsgs )
+void JC_TopicWidget::setCommentMsgs( QList<CommentMsg> commentMsgs )
 {
-	fTopicMsgs = topicMsgs;
+	fCommentMsgs = commentMsgs;
 	
 	// 窗口评论区填充数据
 
 }
 
-void JC_TopicWidget::addTopicMsg( TopicMsg topicMsg )
+void JC_TopicWidget::addCommentMsg( CommentMsg commentMsg )
 {
-	fTopicMsgs.append( topicMsg );
+	fCommentMsgs.append( commentMsg );
 
 	// 窗口评论区添加一条评论
 }

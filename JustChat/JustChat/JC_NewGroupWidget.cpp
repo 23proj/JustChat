@@ -22,6 +22,16 @@ void JC_NewGroupWidget::init()
 	connect( this->ui.btnNewGroup, SIGNAL( clicked() ), this, SLOT( dealNewGroup() ) );
 }
 
+void JC_NewGroupWidget::dealShow()
+{
+	/* 原始数据清空 */
+
+	/* 从数据库中重新读取信息填充到对话框 */
+
+	/* 显示窗口 */
+	show();
+}
+
 void JC_NewGroupWidget::dealNewGroup()
 {
 	// 合法性检查

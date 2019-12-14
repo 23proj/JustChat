@@ -15,6 +15,7 @@ public:
 	~JC_NewGroupWidget();
 	void init();
 	public slots:
+	void dealShow();
 	void dealNewGroup();
 private:
 	Ui::JC_NewGroupWidget ui;

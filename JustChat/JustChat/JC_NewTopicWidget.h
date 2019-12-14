@@ -17,6 +17,7 @@ public:
 	~JC_NewTopicWidget();
 	void init();
 	public slots:
+	void dealShow();
 	void dealNewTopic();
 private:
 	Ui::JC_NewTopicWidget ui;

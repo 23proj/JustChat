@@ -19,14 +19,23 @@
 
 enum MessageType
 {
-	SQUARE_MSG, GROUP_MSG, TOPIC_MSG, ONLINE_MSG, OFFLINE_MSG, \
-	NEW_TOPIC_MSG, NEW_GROUP_MSG
+	SQUARE_MSG, GROUP_MSG, COMMENT_MSG, ONLINE_MSG, OFFLINE_MSG, \
+	NEW_TOPIC_MSG, NEW_GROUP_MSG, REPLY_ONLINE_MSG, USER_INFO, TOPIC_INFO, GROUP_INFO, COMMENT_INFO, REQUEST_INFO
 };
 
 struct OnlineMsg
 {
 	OnlineMsg() {}
 	OnlineMsg( QString user_id, QString user_ip ) :type( ONLINE_MSG ), user_id( user_id ), user_ip( user_ip ) {}
+	int type;
+	QString user_id;
+	QString user_ip;
+};
+
+struct ReplyOnlineMsg
+{
+	ReplyOnlineMsg() {}
+	ReplyOnlineMsg( QString user_id, QString user_ip ) :type( REPLY_ONLINE_MSG ), user_id( user_id ), user_ip( user_ip ) {}
 	int type;
 	QString user_id;
 	QString user_ip;
@@ -64,11 +73,11 @@ struct GroupMsg
 	QString data;
 };
 
-struct TopicMsg
+struct CommentMsg
 {
-	TopicMsg() {}
-	TopicMsg( QString msg_id, QString user_id, QString topic_id, QString data ) :
-		type( TOPIC_MSG ), msg_id( msg_id ), user_id( user_id ), topic_id( topic_id ), data( data ){}
+	CommentMsg() {}
+	CommentMsg( QString msg_id, QString user_id, QString topic_id, QString data ) :
+		type( COMMENT_MSG ), msg_id( msg_id ), user_id( user_id ), topic_id( topic_id ), data( data ){}
 	int type;
 	QString msg_id;
 	QString user_id;
@@ -104,6 +113,7 @@ struct NewGroupMsg
 	QString intro;
 	QString member_id_list;
 };
+
 
 // 产生位数为digits的随机id
 QString generate_id( int digits );

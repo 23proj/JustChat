@@ -6,6 +6,8 @@ MsgType(1 byte) + MsgTypeId(4 byte) + MsgContent(<=256 byte)
 *********************************************/
 #include <QObject>
 #include <QJsonObject>
+#include <QTimer>
+
 #include "data_transmitter.h"
 #include "JC_Public.h"
 
@@ -19,20 +21,43 @@ class JC_HomeDialog;
 class EventHandler : public QObject
 {
 	Q_OBJECT
+private:
+	
+	DataTransmitter* fTransmitter;
+	QString fUserID, fUserIP;
+	bool isAlone_;   // 此用户是否与其它节点断层，即不认识当前在线的所有用户
+	const int waitForReply_ = 3000;   // ms，上线广播后等待回复的时间
+	QList<QString* > ipList_;   // 记录当前在线用户
 
 public:
 	EventHandler( QObject *parent );
 	~EventHandler();
 	void init();
-	bool loadData();
-	bool saveData();
+
+	// load id?
+	bool loadData(); 
+
+	// 加载表数据，为Tcp发送做准备(若空返回false)
+	bool LoadData(QByteArray &data, int type);
+
+	// 加载用户IP，为Tcp发送做准备(若空返回false)
+	bool LoadIpList(QList<QString* > &ipList);
+
+	// 保存别人上线发来的信息（若是新用户返回true）
+	//bool saveData();
+
+	// 向某个人请求三表+评论
+	void CreateRequestInfoMsg(QByteArray& msg) { REQUEST_INFO; };
+
 public slots:
-	// 发送消息的槽
+	// 上线广播等待时间到了
+	void OnlineReplyTimeout();
+// 发送消息的槽
 	void dealSendOnlineMsg( );
 	void dealSendOfflineMsg( );
 	void dealSendSquareMsg( QString data );
 	void dealSendGroupMsg( QString group_id, QString data );
-	void dealSendTopicMsg( QString topic_id, QString data );
+	void dealSendCommentMsg( QString topic_id, QString data );
 	void dealSendNewTopicMsg( QString theme, QString detail );
 	void dealSendNewGroupMsg( QString name, QString intro, QString member_id_list );
 signals:
@@ -41,7 +66,7 @@ signals:
 	void sigRecvOfflineMsg(OfflineMsg offlineMsg );
 	void sigRecvSquareMsg( SquareMsg squareMsg );
 	void sigRecvGroupMsg( GroupMsg groupMsg );
-	void sigRecvTopicMsg( TopicMsg topicMsg );
+	void sigRecvCommentMsg( CommentMsg commentMsg );
 	void sigRecvNewTopicMsg( NewTopicMsg newTopicMsg );
 	void sigRecvNewGroupMsg( NewGroupMsg newGroupMsg );
 private slots:
@@ -49,10 +74,11 @@ private slots:
 	void dealUdpReceive( QByteArray* data, QString* senderIp );
 private:
 	QByteArray createOnlineMsg();
+	QByteArray createReplyOnlineMsg();
 	QByteArray createOfflineMsg();
 	QByteArray createSquareMsg( QString data );
 	QByteArray createGroupMsg( QString group_id, QString data );
-	QByteArray createTopicMsg( QString topic_id, QString data );
+	QByteArray createCommentMsg( QString topic_id, QString data );
 	QByteArray createNewTopicMsg( QString theme, QString detail );
 	QByteArray createNewGroupMsg( QString name, QString intro, QString member_id_list );
 	QStringList getMemberIPList( QString group_id );
@@ -67,4 +93,5 @@ private:
 	QList<OnlineMsg> fOnlineMsgs;
 	QList<OfflineMsg> fOfflineMsgs;
 	QList<SquareMsg> fSquareMsgs;
+	
 };
