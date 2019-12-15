@@ -71,7 +71,8 @@ void DataTransmitter::UdpReadyReadSlot() {
 	QByteArray* data = new QByteArray(dataGram.data());
 	QString* senderIp = new QString(dataGram.senderAddress().toString());
 	// 自己发来的就跳过
-	if(!IsSelf(*senderIp)) emit UdpReceive(data, senderIp);
+	if(!IsSelf(*senderIp)) 
+		emit UdpReceive(data, senderIp);
 }
 
 void DataTransmitter::TcpSendP2P(const QByteArray &data, const QString &receiverIp) {

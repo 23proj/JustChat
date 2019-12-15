@@ -30,18 +30,14 @@ void JC_GroupWidget::setDetail( QString detail )
 	//ui.txtDetail->setText( detail );
 }
 
-void JC_GroupWidget::setGroupMsgs( QList<GroupMsg> groupMsgs )
+void JC_GroupWidget::setGroupMsgs( QList<QJsonObject> groupMsgs )
 {
-	fGroupMsgs = groupMsgs;
-
 	// 窗口消息区填充数据
 
 }
 
-void JC_GroupWidget::addGroupMsg( GroupMsg groupMsg )
+void JC_GroupWidget::addGroupMsg( QJsonObject groupMsg )
 {
-	fGroupMsgs.append( groupMsg );
-
 	// 窗口消息区添加一条数据
 }
 

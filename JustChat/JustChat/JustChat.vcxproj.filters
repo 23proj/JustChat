@@ -75,6 +75,9 @@
     <ClCompile Include="EventHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JsonFileIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="JC_HomeDialog.h">
@@ -114,6 +117,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="EventHandler.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="JsonFileIO.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -27,13 +27,13 @@ public:
 	void init();
 	public slots:
 	void dealShow( int idx);
-	void dealRecvOnlineMsg( OnlineMsg onlineMsg );
-	void dealRecvOfflineMsg( OfflineMsg offlineMsg );
-	void dealRecvSquareMsg( SquareMsg squareMsg );
-	void dealRecvGroupMsg( GroupMsg groupMsg );
-	void dealRecvCommentMsg( CommentMsg commentMsg );
-	void dealRecvNewTopicMsg( NewTopicMsg newTopicMsg );
-	void dealRecvNewGroupMsg( NewGroupMsg newGroupMsg );
+	void dealRecvOnlineMsg( QJsonObject onlineMsg );
+	void dealRecvOfflineMsg( QJsonObject offlineMsg );
+	void dealRecvSquareMsg( QJsonObject squareMsg );
+	void dealRecvGroupMsg( QJsonObject groupMsg );
+	void dealRecvCommentMsg( QJsonObject commentMsg );
+	void dealRecvNewTopicMsg( QJsonObject newTopicMsg );
+	void dealRecvNewGroupMsg( QJsonObject newGroupMsg );
 private:
 	JC_NewTopicWidget    *fNewTopicWidget;
 	JC_TopicTableWidget   *fTopicTableWidget;

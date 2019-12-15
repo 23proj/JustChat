@@ -19,10 +19,10 @@ public:
 	JC_SquareWidget(QWidget *parent = Q_NULLPTR);
 	~JC_SquareWidget();
 	void init();
-	void setSquareMsgs( QList<SquareMsg> squareMsgs );
-	void addSquareMsg( SquareMsg squareMsg );
-	void addOnlineMsg( OnlineMsg onlineMsg );
-	void addOfflineMsg( OfflineMsg offlineMsg );
+	void setSquareMsgs( QList<QJsonObject> squareMsgs );
+	void addSquareMsg( QJsonObject squareMsg );
+	void addOnlineMsg( QJsonObject onlineMsg );
+	void addOfflineMsg( QJsonObject offlineMsg );
 	public slots:
 	void dealShow();
 	void dealSendSquareMsg();

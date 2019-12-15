@@ -18,8 +18,8 @@ public:
 	void setID( qint32 id ) { fId = id; }
 	void setTheme( QString theme );
 	void setDetail( QString detail );
-	void setCommentMsgs( QList<CommentMsg> commentMsgs );
-	void addCommentMsg( CommentMsg commentMsg );
+	void setCommentMsgs( QList<QJsonObject> commentMsgs );
+	void addCommentMsg( QJsonObject commentMsg );
 	public slots:
 	void dealShow();
 	void dealSendOut();
@@ -27,5 +27,4 @@ private:
 	Ui::JC_TopicWidget ui;
 	JC_HomeDialog *fHome;
 	qint32	fId;
-	QList<CommentMsg> fCommentMsgs;
 };

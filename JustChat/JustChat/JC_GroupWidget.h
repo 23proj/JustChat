@@ -18,8 +18,8 @@ public:
 	void setID( qint32 id ) { fId = id; }
 	void setName( QString name );
 	void setDetail( QString detail );
-	void setGroupMsgs( QList<GroupMsg> groupMsgs );
-	void addGroupMsg( GroupMsg groupMsg );
+	void setGroupMsgs( QList<QJsonObject> groupMsgs );
+	void addGroupMsg( QJsonObject groupMsg );
 	public slots:
 	void dealShow();
 	void dealSendOut();
@@ -27,5 +27,4 @@ private:
 	Ui::JC_GroupWidget ui;
 	JC_HomeDialog *fHome;
 	qint32	fId;
-	QList<GroupMsg> fGroupMsgs;
 };

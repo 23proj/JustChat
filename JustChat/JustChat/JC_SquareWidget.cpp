@@ -58,33 +58,33 @@ void JC_SquareWidget::init()
 	connect( fBtnSendOut, SIGNAL( clicked() ), this, SLOT( dealSendSquareMsg() ) );
 }
 
-void JC_SquareWidget::setSquareMsgs( QList<SquareMsg> squareMsgs )
+void JC_SquareWidget::setSquareMsgs( QList<QJsonObject> squareMsgs )
 {
 	// 窗口消息区填充数据
 }
 
-void JC_SquareWidget::addSquareMsg( SquareMsg squareMsg )
+void JC_SquareWidget::addSquareMsg( QJsonObject squareMsg )
 {
 	// 窗口消息区添加一条数据
 	QString squareMsgStr =
-		"type:" + QString::number( squareMsg.type ) + "," +
-		"msg_id:" + squareMsg.msg_id + "," +
-		"user_id:" + squareMsg.user_id + "," +
-		"data:" + squareMsg.data;
+		"type:" + QString::number(squareMsg.value("type").toInt()) + "," +
+		"msg_id:" + squareMsg.value("msg_id").toString() + "," +
+		"user_id:" + squareMsg.value( "user_id").toString() + "," +
+		"data:" + squareMsg.value( "data").toString();
 	fLstMsgWindow->addItem( squareMsgStr );
 }
 
-void JC_SquareWidget::addOnlineMsg( OnlineMsg onlineMsg )
+void JC_SquareWidget::addOnlineMsg( QJsonObject onlineMsg )
 {
 	// 窗口消息区添加一条在线数据
-	QString onlineMsgStr = "用户" + onlineMsg.user_id + "(" + onlineMsg.user_ip + ") 已上线";
+	QString onlineMsgStr = "用户" + onlineMsg.value( "user_id").toString() + "(" + onlineMsg.value( "user_ip").toString() + ") 已上线";
 	fLstMsgWindow->addItem( onlineMsgStr );
 }
 
-void JC_SquareWidget::addOfflineMsg( OfflineMsg offlineMsg )
+void JC_SquareWidget::addOfflineMsg( QJsonObject offlineMsg )
 {
 	// 窗口消息区添加一条下线数据
-	QString offlineMsgStr = "用户" + offlineMsg.user_id + "(" + offlineMsg.user_ip + ") 已下线";
+	QString offlineMsgStr = "用户" + offlineMsg.value( "user_id").toString() + "(" + offlineMsg.value( "user_ip").toString() + ") 已下线";
 }
 
 void JC_SquareWidget::dealShow()

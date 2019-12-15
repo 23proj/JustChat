@@ -90,7 +90,7 @@ void JC_MyGroupTableWidget::dealShowGroup()
 	fGroupWidget->setID( ( qint32 ) items[0]->text().toInt() );
 	fGroupWidget->setName( items[1]->text() );
 	fGroupWidget->setDetail( items[2]->text() );
-	fGroupWidget->setGroupMsgs( QList<GroupMsg>() ); // TODO: 填充群组消息数据
+	fGroupWidget->setGroupMsgs( QList<QJsonObject>() ); // TODO: 填充群组消息数据
 	fCurWidget->hide();
 	fCurWidget = fGroupWidget;
 	fCurWidget->show();

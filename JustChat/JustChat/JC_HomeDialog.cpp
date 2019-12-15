@@ -97,37 +97,37 @@ void JC_HomeDialog::dealShow( int idx )
 	}
 }
 
-void JC_HomeDialog::dealRecvOnlineMsg( OnlineMsg onlineMsg )
+void JC_HomeDialog::dealRecvOnlineMsg( QJsonObject onlineMsg )
 {
 	fSquareWidget->addOnlineMsg( onlineMsg );
 }
 
-void JC_HomeDialog::dealRecvOfflineMsg( OfflineMsg offlineMsg )
+void JC_HomeDialog::dealRecvOfflineMsg( QJsonObject offlineMsg )
 {
 	fSquareWidget->addOfflineMsg( offlineMsg );
 }
 
-void JC_HomeDialog::dealRecvSquareMsg( SquareMsg squareMsg )
+void JC_HomeDialog::dealRecvSquareMsg( QJsonObject squareMsg )
 {
 	fSquareWidget->addSquareMsg( squareMsg );
 }
 
-void JC_HomeDialog::dealRecvGroupMsg( GroupMsg groupMsg )
+void JC_HomeDialog::dealRecvGroupMsg( QJsonObject groupMsg )
 {
 
 }
 
-void JC_HomeDialog::dealRecvCommentMsg( CommentMsg commentMsg )
+void JC_HomeDialog::dealRecvCommentMsg( QJsonObject commentMsg )
 {
 
 }
 
-void JC_HomeDialog::dealRecvNewTopicMsg( NewTopicMsg newTopicMsg )
+void JC_HomeDialog::dealRecvNewTopicMsg( QJsonObject newTopicMsg )
 {
 
 }
 
-void JC_HomeDialog::dealRecvNewGroupMsg( NewGroupMsg newGroupMsg )
+void JC_HomeDialog::dealRecvNewGroupMsg( QJsonObject newGroupMsg )
 {
 
 }
