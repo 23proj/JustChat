@@ -60,9 +60,14 @@ void JC_HomeDialog::init()
 
 	// 建立信号槽
 	connect( fTabWidget, SIGNAL( tabBarClicked( int ) ), this, SLOT( dealShow( int ) ) );
+	connect(this, &QObject::destroyed, this, &JC_HomeDialog::exit);
 
 	// 发送在线广播
 	fEventHandler->dealSendOnlineMsg();
+}
+void JC_HomeDialog::exit() {
+	JsonFileIO* fileIOPtr_ = JsonFileIO::GetFileIOPtr();
+	fileIOPtr_->exit();
 }
 
 void JC_HomeDialog::dealShow( int idx )

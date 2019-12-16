@@ -6,10 +6,25 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTimer>
+#include <iostream>
+using std::cout;
+using std::endl;
 
 class JsonFileIO : public QObject
 {
 	Q_OBJECT
+private:
+	// 改成单例模式了，因为这个类放了很多内存的数据，
+	// 如果其它每个需要用到这个模块的都new一个自己的FileIO对象,就做不到互通有无了
+	JsonFileIO(QObject *parent = nullptr);
+	static JsonFileIO* ptr;
+public:
+	static JsonFileIO* GetFileIOPtr() {
+		return ptr;
+	}
+	// 退出之前调用一次
+	void exit();
+
 private:
 	QJsonArray fOnlineMsgs;
 	QJsonArray fOfflineMsgs;
@@ -26,6 +41,12 @@ private:
 	QJsonArray fMsgInfos;
 	// 
 	QString fUserID;
+
+public:
+	// 获取所有话题信息
+	QJsonArray* GetTopicInfos() {return (&fTopicInfos);};
+	QJsonArray* GetMsgInfos() { return (&fMsgInfos); };
+
 public:
 	QString getUserID();
 	QByteArray createOnlineMsg();
@@ -34,7 +55,7 @@ public:
 	QByteArray createSquareMsg( QString data );
 	QByteArray createGroupMsg( QString group_id, QString data );
 	QByteArray createCommentMsg( QString topic_id, QString data );
-	QByteArray createNewTopicMsg( QString theme, QString detail );
+	QByteArray createNewTopicMsg(QString theme, QString detail );
 	QByteArray createNewGroupMsg( QString name, QString intro, QString member_id_list );
 	QStringList getMemberIPList( QString group_id );
 public:
@@ -46,8 +67,7 @@ public:
 	// 加载表数据，为Tcp发送做准备(若空返回false)
 	bool LoadData(QByteArray &data, int type);
 public:
-	JsonFileIO(QObject *parent);
-	~JsonFileIO();
+
 	bool addUserInfo( QJsonObject userInfo );
 	bool addTopicInfo( QJsonObject topicInfo );
 	bool addGroupInfo( QJsonObject groupInfo );

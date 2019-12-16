@@ -108,4 +108,6 @@ void JC_SquareWidget::dealSendSquareMsg()
 
 	// 前台处理
 	fTxtInputWindow->clear();
+	fLstMsgWindow->addItem(txt);
+	
 }

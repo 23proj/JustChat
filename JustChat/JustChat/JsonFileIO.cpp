@@ -3,6 +3,8 @@
 #include <QDir>
 #include <QDataStream>
 
+JsonFileIO* JsonFileIO::ptr = new JsonFileIO;
+
 JsonFileIO::JsonFileIO(QObject *parent)
 	: QObject(parent)
 {
@@ -13,7 +15,7 @@ JsonFileIO::JsonFileIO(QObject *parent)
 		; // TODO: log
 }
 
-JsonFileIO::~JsonFileIO()
+void JsonFileIO::exit()
 {
 	if ( !saveAllData() )
 		; // TODO: log
@@ -33,6 +35,7 @@ bool JsonFileIO::addUserInfo( QJsonObject userInfo )
 
 bool JsonFileIO::addTopicInfo( QJsonObject topicInfo )
 {
+	topicInfo.remove("type");
 	fTopicInfos.append( topicInfo );
 	return true;
 }
@@ -122,7 +125,10 @@ QByteArray JsonFileIO::createOfflineMsg()
 QByteArray JsonFileIO::createSquareMsg( QString data )
 {
 	QString msg_id = generate_id( MESSAGE_ID_LEN );
-	return QJsonDocument( QJsonObject( { { "type",SQUARE_MSG },{ "msg_id",msg_id },{ "user_id",fUserID },{ "data",data } } ) ).toJson();
+	QJsonObject jsonObj1({ { "type",SQUARE_MSG },{ "msg_id",msg_id },{ "user_id",fUserID },{ "data",data } });
+	QJsonObject jsonObj2({ { "msg_id",msg_id },{ "user_id",fUserID },{ "type",SQUARE_MSG }, { "type_id","" },{ "data",data } });
+	fMsgInfos.append(jsonObj2);
+	return QJsonDocument(jsonObj1).toJson();
 }
 
 QByteArray JsonFileIO::createGroupMsg( QString group_id, QString data )
@@ -134,13 +140,18 @@ QByteArray JsonFileIO::createGroupMsg( QString group_id, QString data )
 QByteArray JsonFileIO::createCommentMsg( QString topic_id, QString data )
 {
 	QString msg_id = generate_id( MESSAGE_ID_LEN );
-	return QJsonDocument( QJsonObject( { { "type",COMMENT_MSG },{ "msg_id",msg_id },{ "user_id",fUserID },{ "topic_id",topic_id },{ "data",data } } ) ).toJson();
+	QJsonObject jsonObj({ { "msg_id",msg_id },{ "user_id",fUserID },{ "type",COMMENT_MSG }, { "type_id",topic_id },{ "data",data } });
+	fMsgInfos.append(jsonObj);
+	return QJsonDocument(jsonObj).toJson();
 }
 
-QByteArray JsonFileIO::createNewTopicMsg( QString theme, QString detail )
+QByteArray JsonFileIO::createNewTopicMsg(QString theme, QString detail )
 {
 	QString topic_id = generate_id( TOPIC_ID_LEN );
-	return QJsonDocument( QJsonObject( { { "type",NEW_TOPIC_MSG },{ "topic_id",topic_id },{ "user_id",fUserID },{ "theme",theme },{ "detail",detail } } ) ).toJson();
+	QJsonObject jsonObj1({ { "type",NEW_TOPIC_MSG },{ "topic_id",topic_id },{ "user_id",fUserID },{ "theme",theme },{ "detail",detail } });
+	QJsonObject jsonObj2({ { "topic_id",topic_id },{ "user_id",fUserID },{ "theme",theme },{ "detail",detail } });
+	fTopicInfos.append(jsonObj2);
+	return QJsonDocument(jsonObj1).toJson();
 }
 
 QByteArray JsonFileIO::createNewGroupMsg( QString name, QString intro, QString member_id_list )

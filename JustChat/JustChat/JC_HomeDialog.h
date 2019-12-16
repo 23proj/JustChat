@@ -15,6 +15,7 @@
 #include "JC_GroupWidget.h"
 #include "JC_SquareWidget.h"
 #include "EventHandler.h"
+#include "JsonFileIO.h"
 
 class JC_HomeDialog : public QMainWindow
 {
@@ -25,7 +26,11 @@ public:
 	JC_HomeDialog( QWidget *parent = Q_NULLPTR );
 	~JC_HomeDialog();
 	void init();
+	QTabWidget* GetTabWidget() {
+		return fTabWidget;
+	}
 	public slots:
+	void exit();
 	void dealShow( int idx);
 	void dealRecvOnlineMsg( QJsonObject onlineMsg );
 	void dealRecvOfflineMsg( QJsonObject offlineMsg );
@@ -44,4 +49,5 @@ private:
 	JC_SquareWidget *fSquareWidget;
 	QTabWidget *fTabWidget;
 	QHBoxLayout *fMainLayout;
+
 };
