@@ -10,6 +10,12 @@
 	"user_ip": "222.222.222.222"
 };
 
+// 回复在线消息
+{
+	"type": REPLY_ONLINE_MSG,
+	
+};
+
 // 离线广播消息
 {
 	"type": OFFLINE_MSG,
@@ -22,7 +28,6 @@
 	"type": SQUARE_MSG,
 	"msg_id": "23Jerk34FG4fdGV", // 15位随机码[0-9a-zA-Z]
 	"user_id": "Bd23J23Iueh4342dsa",
-	"type_id": "", // 广场聊天则空
 	"data": "这是广场聊天的消息"
 };
 
@@ -32,7 +37,8 @@
 	"msg_id": "sfd3rk34FG434fs",
 	"user_id": "Bd23J23Iueh4342dsa",
 	"group_id": "fi23J9Sfe98", 		// 群组聊天则为10位随机码[0-9a-zA-Z]
-	"data": "这是群组聊天的消息"
+	"data": "这是群组聊天的消息",
+	"date": 
 };
 
 // 话题评论消息
