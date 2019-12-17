@@ -74,7 +74,7 @@ public:
 
 	bool addUserInfo( QJsonObject userInfo );
 	bool addTopicInfo( QJsonObject topicInfo );
-	bool addGroupInfo( QJsonObject groupInfo );
+	bool addGroupInfo( QJsonObject groupInfo ,QString user_ip);
 	bool addMsgInfo( QJsonObject msgInfo );
 	bool saveAllData();
 	bool loadAllData();

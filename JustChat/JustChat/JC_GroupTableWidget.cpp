@@ -50,7 +50,10 @@ void JC_GroupTableWidget::init()
 
 void JC_GroupTableWidget::DealRecvGroupMsg(QJsonObject msg) {
 	// 只有当前界面是组聊详情且该组聊的id是发来的消息的group_id才显示在界面上
-	if (fCurWidget == fGroupWidget && fGroupWidget->GetID() == msg.value("group_id").toString())
+	cout << msg.value("user_id").toString().toStdString() << endl;
+	cout << msg.value("data").toString().toStdString() << endl;
+	cout << msg.value("type_id").toString().toStdString() << endl;
+	if (fCurWidget == fGroupWidget && fGroupWidget->GetID() == msg.value("type_id").toString())
 		fGroupWidget->addGroupMsg(msg);
 }
 

@@ -103,7 +103,7 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	case NEW_GROUP_MSG:
 	{
 		// 后台处理
-		fJsonFileIO->addGroupInfo(jsonObj);
+		fJsonFileIO->addGroupInfo(jsonObj, *senderIp);
 
 		// 前端处理
 		
@@ -174,6 +174,7 @@ void EventHandler::dealSendGroupMsg( QString group_id, QString data )
 	QStringList* member_ip_list = fJsonFileIO->GetMemberIpList( group_id );
 
 	if (1 == member_ip_list->size()) return; // 只有自己
+	cout << " 发送" << endl;
 	for (auto & i : *member_ip_list) fTransmitter->UdpSendP2P(msg, i);
 }
 
