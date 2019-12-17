@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	return app.exec();
 }
 
-//#include <Python.h>
+//#include <python.h>
 //
 //int main()
 //{
@@ -18,7 +18,9 @@ int main(int argc, char *argv[])
 //	PyObject* pModule = NULL;
 //	PyObject* pFunc = NULL;
 //	pModule = PyImport_ImportModule("hello_world");
+//
 //	pFunc = PyObject_GetAttrString(pModule, "hello");
+//
 //	PyEval_CallObject(pFunc, NULL);
 //	Py_Finalize();
 //	system("pause");
