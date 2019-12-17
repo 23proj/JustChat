@@ -36,6 +36,16 @@ JC_TopicTableWidget::JC_TopicTableWidget( QWidget *parent)
 	jsonFileIo_ = JsonFileIO::GetFileIOPtr();
 }
 
+JC_TopicTableWidget::~JC_TopicTableWidget()
+{
+}
+
+void JC_TopicTableWidget::init()
+{
+	connect(fBtnView, SIGNAL(clicked()), this, SLOT(dealShowTopic()));
+	connect(fBtnBack, SIGNAL(clicked()), this, SLOT(dealShow()));
+}
+
 void JC_TopicTableWidget::dealShow()
 {
 	/* 原始数据清空 */
@@ -67,29 +77,16 @@ void JC_TopicTableWidget::dealShowTopic()
 {
 	// 获取当前选择的话题
 	QList<QTableWidgetItem*> items = fTopicTableWidget->selectedItems();
-	if ( items.empty() )
-	{
-		QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个主题" ) );
-		return;
+	if ( items.empty() ) QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个主题" ) );
+	else {
+		// 获取窗口信息
+		fTopicWidget->setID(items[0]->text());
+		fTopicWidget->setTheme(items[1]->text());
+		fTopicWidget->setDetail(items[2]->text());
+		//fTopicWidget->setCommentMsgs( QList<QJsonObject>() ); // TODO: 填充评论数据
+		fCurWidget->hide();
+		fCurWidget = fTopicWidget;
+		fTopicWidget->dealShow();
 	}
-	
-	// 获取窗口信息
-	fTopicWidget->setID(items[0]->text());
-	fTopicWidget->setTheme( items[1]->text() );
-	fTopicWidget->setDetail( items[2]->text() );
-	//fTopicWidget->setCommentMsgs( QList<QJsonObject>() ); // TODO: 填充评论数据
-	fCurWidget->hide();
-	fCurWidget = fTopicWidget;
-	fTopicWidget->dealShow();
 }
 
-JC_TopicTableWidget::~JC_TopicTableWidget()
-{
-}
-
-void JC_TopicTableWidget::init()
-{
-	// 建立信号槽
-	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowTopic() ) );
-	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
-}

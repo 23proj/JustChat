@@ -102,11 +102,8 @@ void JC_SquareWidget::dealSendSquareMsg()
 	QString txt = fTxtInputWindow->toPlainText();
 	if ( txt.isEmpty() )
 		return;
-	
-	// 后台处理
+	// 后前台处理
 	fEventHandler->dealSendSquareMsg( txt );
-
-	// 前台处理
 	fTxtInputWindow->clear();
 	fLstMsgWindow->addItem(txt);
 	

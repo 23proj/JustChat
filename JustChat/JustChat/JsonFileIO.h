@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTimer>
+#include <map>
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -39,13 +40,17 @@ private:
 	QJsonArray fTopicInfos;
 	QJsonArray fGroupInfos;
 	QJsonArray fMsgInfos;
+	// 存储组成员id<group_id, &id_list>
+	std::map<QString , QStringList* >* group_member_id_list_;
+	// 存储组成员ip<group_id, &ip_list>(避免每发一次group_msg就要查询一次)
+	std::map<QString , QStringList* >* group_member_ip_list_;
 	// 
 	QString fUserID;
 
 public:
-	// 获取所有话题信息
 	QJsonArray* GetTopicInfos() {return (&fTopicInfos);};
-	QJsonArray* GetMsgInfos() { return (&fMsgInfos); };
+	QJsonArray* GetGroupInfos() {return (&fGroupInfos);};
+	QJsonArray* GetMsgInfos() { return (&fMsgInfos);};
 
 public:
 	QString getUserID();
@@ -56,8 +61,9 @@ public:
 	QByteArray createGroupMsg( QString group_id, QString data );
 	QByteArray createCommentMsg( QString topic_id, QString data );
 	QByteArray createNewTopicMsg(QString theme, QString detail );
-	QByteArray createNewGroupMsg( QString name, QString intro, QString member_id_list );
-	QStringList getMemberIPList( QString group_id );
+	QByteArray createNewGroupMsg( QString name, QString intro);
+	QStringList* GetMemberIpList(QString group_id);
+
 public:
 	void addOnlineMsg( QJsonObject onlineMsg );
 	void addOfflineMsg( QJsonObject offlineMsg );

@@ -33,7 +33,7 @@ public:
 	EventHandler( QObject *parent );
 	~EventHandler();
 	void init();
-
+	void WriteOwnInfo();
 	// load id?
 //	bool loadData(); 
 
@@ -59,7 +59,7 @@ public slots:
 	void dealSendGroupMsg( QString group_id, QString data );
 	void dealSendCommentMsg( QString topic_id, QString data );
 	void dealSendNewTopicMsg(QString theme, QString detail );
-	void dealSendNewGroupMsg( QString name, QString intro, QString member_id_list );
+	void dealSendNewGroupMsg( QString name, QString intro);
 signals:
 	// 接收消息的信号
 	void sigRecvOnlineMsg( QJsonObject onlineMsg );

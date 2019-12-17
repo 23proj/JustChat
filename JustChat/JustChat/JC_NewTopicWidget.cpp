@@ -9,13 +9,17 @@ JC_NewTopicWidget::JC_NewTopicWidget(QWidget *parent)
 	fEventHandler = fHome->fEventHandler;
 }
 
+JC_NewTopicWidget::~JC_NewTopicWidget()
+{
+}
+
+void JC_NewTopicWidget::init()
+{
+	connect(this->ui.btnNewTopic, SIGNAL(clicked()), this, SLOT(dealNewTopic()));
+}
+
 void JC_NewTopicWidget::dealShow()
 {
-	/* 原始数据清空 */
-
-	/* 从数据库中重新读取信息填充到对话框 */
-
-	/* 显示窗口 */
 	ui.lineEtTopicTitle->setText("");
 	ui.txtTopicContent->setText("");
 	show();
@@ -40,14 +44,4 @@ void JC_NewTopicWidget::dealNewTopic()
 	QMessageBox::information(nullptr, tr("提示"), tr("创建话题成功!"));
 	// 跳转页面(话题详情页)
 
-}
-
-JC_NewTopicWidget::~JC_NewTopicWidget()
-{
-}
-
-void JC_NewTopicWidget::init()
-{
-	// 建立信号槽
-	connect( this->ui.btnNewTopic, SIGNAL( clicked() ), this, SLOT( dealNewTopic() ) );
 }

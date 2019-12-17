@@ -4,6 +4,8 @@
 #include "JC_Public.h"
 #include <QtWidgets/QWidget>
 #include "ui_JC_GroupWidget.h"
+#include "EventHandler.h"
+#include "JsonFileIO.h"
 
 class JC_HomeDialog;
 
@@ -12,19 +14,22 @@ class JC_GroupWidget : public QWidget
 	Q_OBJECT
 
 public:
-	JC_GroupWidget( QWidget *parent = Q_NULLPTR);
+	JC_GroupWidget( QWidget *parent);
 	~JC_GroupWidget();
-	void init();
-	void setID( qint32 id ) { fId = id; }
+	void setID(QString id) { fId = id; }
+	QString GetID() {return fId;}
 	void setName( QString name );
-	void setDetail( QString detail );
+	void setIntro( QString intro );
 	void setGroupMsgs( QList<QJsonObject> groupMsgs );
-	void addGroupMsg( QJsonObject groupMsg );
 	public slots:
 	void dealShow();
 	void dealSendOut();
+	void addGroupMsg(QJsonObject groupMsg);
 private:
 	Ui::JC_GroupWidget ui;
 	JC_HomeDialog *fHome;
-	qint32	fId;
+	QString	fId;
+
+	EventHandler *fEventHandler;
+	JsonFileIO *jsonFileIo_;
 };

@@ -50,6 +50,7 @@ void JC_HomeDialog::init()
 {
 	// init
 	fEventHandler->init();
+	fEventHandler->WriteOwnInfo();  // 这里整个程序只在开始调用了一次，所以在此写入用户自己的信息
 	fSquareWidget->init();
 	fNewTopicWidget->init();
 	fTopicTableWidget->init();
@@ -119,7 +120,7 @@ void JC_HomeDialog::dealRecvSquareMsg( QJsonObject squareMsg )
 
 void JC_HomeDialog::dealRecvGroupMsg( QJsonObject groupMsg )
 {
-
+	fGroupTableWidget->DealRecvGroupMsg(groupMsg);
 }
 
 void JC_HomeDialog::dealRecvCommentMsg( QJsonObject commentMsg )

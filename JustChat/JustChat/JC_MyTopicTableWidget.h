@@ -27,6 +27,5 @@ private:
 	QPushButton *fBtnBack;
 	JC_TopicWidget *fTopicWidget;
 	JC_HomeDialog *fHome;
-
 	JsonFileIO* jsonFileIo_;
 };

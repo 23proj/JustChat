@@ -10,10 +10,10 @@ JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
 	fCurWidget = fGroupTableWidget;
 	fBtnView = new QPushButton( "查看" );
 	fBtnBack = new QPushButton( "返回" );
-	fGroupWidget = new JC_GroupWidget();
+	fGroupWidget = new JC_GroupWidget(parent);
 	fGroupWidget->hide();
 
-	fGroupTableWidget->setHorizontalHeaderLabels( QStringList() << "所有群组id" << "群组名称" << "群组详情" << "群组人数" );
+	fGroupTableWidget->setHorizontalHeaderLabels( QStringList() << "id" << "名称" << "介绍" << "人数" );
 	fGroupTableWidget->verticalHeader()->setVisible( true );
 	fGroupTableWidget->horizontalHeader()->setVisible( true );
 	fGroupTableWidget->horizontalHeader()->setSectionsClickable( false ); //设置表头不可点击（默认点击后进行排序）
@@ -34,6 +34,7 @@ JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
 
+	jsonFileIo_ = JsonFileIO::GetFileIOPtr();
 }
 
 JC_GroupTableWidget::~JC_GroupTableWidget()
@@ -42,9 +43,14 @@ JC_GroupTableWidget::~JC_GroupTableWidget()
 
 void JC_GroupTableWidget::init()
 {
-	// 建立信号槽
 	connect( fBtnView, SIGNAL( clicked() ), this, SLOT( dealShowGroup() ) );
 	connect( fBtnBack, SIGNAL( clicked() ), this, SLOT( dealShow() ) );
+}
+
+void JC_GroupTableWidget::DealRecvGroupMsg(QJsonObject msg) {
+	// 只有当前界面是组聊详情且该组聊的id是发来的消息的group_id才显示在界面上
+	if (fCurWidget == fGroupWidget && fGroupWidget->GetID() == msg.value("group_id").toString())
+		fGroupWidget->addGroupMsg(msg);
 }
 
 void JC_GroupTableWidget::dealShow()
@@ -53,21 +59,21 @@ void JC_GroupTableWidget::dealShow()
 	fGroupTableWidget->clearContents();
 
 	/* 从数据库中重新读取信息填充到对话框 */
-
-	for ( qint32 i = 0; i < 5; ++i )
-	{
-		QTableWidgetItem* itmId = new QTableWidgetItem( QString( "所有群组ID%1" ).arg( i ) );
-		QTableWidgetItem* itmTitle = new QTableWidgetItem( QString( "所有群组名%1" ).arg( i ) );
-		QTableWidgetItem* itmContent = new QTableWidgetItem( QString( "所有群组%1的介绍" ).arg( i ) );
-		QTableWidgetItem* itmPeople = new QTableWidgetItem( QString( "所有群组%1的人数" ).arg( i ) );
-		itmId->setTextAlignment( Qt::AlignCenter );
-		itmTitle->setTextAlignment( Qt::AlignCenter );
-		itmContent->setTextAlignment( Qt::AlignCenter );
-		itmPeople->setTextAlignment( Qt::AlignCenter );
-		fGroupTableWidget->setItem( i, 0, itmId );
-		fGroupTableWidget->setItem( i, 1, itmTitle );
-		fGroupTableWidget->setItem( i, 2, itmContent );
-		fGroupTableWidget->setItem( i, 3, itmPeople );
+	QJsonArray* groupInfos = jsonFileIo_->GetGroupInfos();
+	int count = groupInfos->size();
+	for (int i = 0; i < count; ++i) {
+		QJsonObject jsonObj = groupInfos->at(i).toObject();
+		QTableWidgetItem *id = new QTableWidgetItem(jsonObj.value("group_id").toString());
+		QTableWidgetItem *name = new QTableWidgetItem(jsonObj.value("name").toString());
+		QTableWidgetItem *intro = new QTableWidgetItem(jsonObj.value("intro").toString());
+		QTableWidgetItem *memberNum = new QTableWidgetItem(QString::number(jsonObj.value("member_id_list").toArray().size()));
+		id->setTextAlignment(Qt::AlignCenter);
+		name->setTextAlignment(Qt::AlignCenter);
+		intro->setTextAlignment(Qt::AlignCenter);
+		fGroupTableWidget->setItem(i, 0, id);
+		fGroupTableWidget->setItem(i, 1, name);
+		fGroupTableWidget->setItem(i, 2, intro);
+		fGroupTableWidget->setItem(i, 3, memberNum);
 	}
 
 	/* 显示窗口 */
@@ -80,18 +86,15 @@ void JC_GroupTableWidget::dealShowGroup()
 {
 	// 获取当前选择的群组
 	QList<QTableWidgetItem*> items = fGroupTableWidget->selectedItems();
-	if ( items.empty() )
-	{
-		QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个群组" ) );
-		return;
+	if ( items.empty() ) QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个群组" ) );
+	else {
+		// 获取窗口信息
+		fGroupWidget->setID(items[0]->text());
+		fGroupWidget->setName(items[1]->text());
+		fGroupWidget->setIntro(items[2]->text());
+		//fGroupWidget->setGroupMsgs(QList<QJsonObject>()); // TODO: 填充群组消息数据
+		fCurWidget->hide();
+		fCurWidget = fGroupWidget;
+		fGroupWidget->dealShow();
 	}
-	
-	// 获取窗口信息
-	fGroupWidget->setID( ( qint32 ) items[0]->text().toInt() );
-	fGroupWidget->setName( items[1]->text() );
-	fGroupWidget->setDetail( items[2]->text() );
-	fGroupWidget->setGroupMsgs( QList<QJsonObject>() ); // TODO: 填充群组消息数据
-	fCurWidget->hide();
-	fCurWidget = fGroupWidget;
-	fCurWidget->show();
 }

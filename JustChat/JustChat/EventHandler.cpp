@@ -6,7 +6,7 @@ EventHandler::EventHandler(QObject *parent): QObject(parent){
 	fTransmitter = new DataTransmitter;
 	fTransmitter->init();
 	fJsonFileIO = JsonFileIO::GetFileIOPtr();
-	
+
 	isAlone_ = true;
 }
 
@@ -18,7 +18,6 @@ void EventHandler::init()
 {
 	// 接收消息
 	connect( fTransmitter, &DataTransmitter::UdpReceive, this, &EventHandler::dealUdpReceive );
-
 	connect( this, &EventHandler::sigRecvOnlineMsg, fHome, &JC_HomeDialog::dealRecvOnlineMsg );
 	connect( this, &EventHandler::sigRecvOfflineMsg, fHome, &JC_HomeDialog::dealRecvOfflineMsg );
 	connect( this, &EventHandler::sigRecvSquareMsg, fHome, &JC_HomeDialog::dealRecvSquareMsg );
@@ -27,7 +26,9 @@ void EventHandler::init()
 	connect( this, &EventHandler::sigRecvNewTopicMsg, fHome, &JC_HomeDialog::dealRecvNewTopicMsg );
 	connect( this, &EventHandler::sigRecvNewGroupMsg, fHome, &JC_HomeDialog::dealRecvNewGroupMsg );
 }
-
+void EventHandler::WriteOwnInfo() {
+	fJsonFileIO->addUserInfo(QJsonObject({ { "user_id",fJsonFileIO->getUserID() },{ "user_ip",fTransmitter->GetIp() } }));
+}
 // bool EventHandler::loadData()
 // {
 // 	fUserID = generate_id( 18 );
@@ -49,66 +50,44 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	{
 	case ONLINE_MSG:
 	{
-		// 后台处理
-		//saveData(user_id, user_ip);
-		QString *user_ip = new QString( *senderIp );
-		ipList_.append( user_ip );
-		// 回复自己的信息
+		// 保存信息并回复
+		ipList_.append(new QString(*senderIp));
 		QByteArray replyOnlineJson = fJsonFileIO->createReplyOnlineMsg();
 		fTransmitter->UdpSendP2P( replyOnlineJson, *senderIp);
-
-		// 前端处理
-		// 保存别人的信息
-		fJsonFileIO->addOnlineMsg( jsonObj );
-		// 发送给前端
-		emit sigRecvOnlineMsg( jsonObj );
+		fJsonFileIO->addUserInfo(QJsonObject({ { "user_id",jsonObj.value("user_id") },{ "user_ip",*senderIp } }));
+		//emit sigRecvOnlineMsg( jsonObj );
 		break;
 	}
 	case REPLY_ONLINE_MSG: {
-		// 保存别人的信息
-		QString *user_ip = new QString( *senderIp );
-		ipList_.append( user_ip );
+		// 保存信息
+		ipList_.append(new QString(*senderIp));
 		fJsonFileIO->addReplyOnlineMsg( jsonObj );
-
-		
-		if (!fJsonFileIO->addUserInfo( jsonObj ))
+		if (fJsonFileIO->addUserInfo(QJsonObject({ { "user_id",jsonObj.value("user_id") },{ "user_ip",*senderIp } })))
 			isAlone_ = false;
 		break;
 	}
 	case OFFLINE_MSG:
 	{
-		// 后台处理
-
-		// 前端处理
 		fJsonFileIO->addOfflineMsg( jsonObj );
 		emit sigRecvOfflineMsg( jsonObj );
 		break;
 	}
 	case SQUARE_MSG:
 	{
-		// 后台处理
-		fJsonFileIO->addSquareMsg(jsonObj);
-		// 前端处理
-		
+		fJsonFileIO->addMsgInfo(jsonObj);
 		emit sigRecvSquareMsg( jsonObj );
 		break;
 	}
 	case GROUP_MSG:
 	{
-		// 后台处理
-
-		// 前端处理
-
-		emit sigRecvGroupMsg( jsonObj );
+		fJsonFileIO->addMsgInfo(jsonObj);
+		//emit sigRecvGroupMsg( jsonObj );
 		break;
 	}
 	case COMMENT_MSG:
 	{
-		// 后台处理
 		fJsonFileIO->addMsgInfo(jsonObj);
-		// 前端处理
-	
-		emit sigRecvCommentMsg( jsonObj );
+		//emit sigRecvCommentMsg( jsonObj );
 		break;
 	}
 	case NEW_TOPIC_MSG:
@@ -118,16 +97,17 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 
 		// 前端处理
 	
-		emit sigRecvNewTopicMsg( jsonObj );
+		//emit sigRecvNewTopicMsg( jsonObj );
 		break;
 	}
 	case NEW_GROUP_MSG:
 	{
 		// 后台处理
+		fJsonFileIO->addGroupInfo(jsonObj);
 
 		// 前端处理
 		
-		emit sigRecvNewGroupMsg( jsonObj );
+		//emit sigRecvNewGroupMsg( jsonObj );
 		break;
 	}
 	case USER_INFO: {
@@ -186,12 +166,11 @@ void EventHandler::dealSendSquareMsg( QString data )
 
 void EventHandler::dealSendGroupMsg( QString group_id, QString data )
 {
-	QByteArray groupMsgJson = fJsonFileIO->createGroupMsg( group_id, data );
-	QStringList member_ip_list = fJsonFileIO->getMemberIPList( group_id );
-	foreach( QString member_ip, member_ip_list )
-	{
-		fTransmitter->UdpSendP2P( groupMsgJson, member_ip );
-	}
+	QByteArray msg = fJsonFileIO->createGroupMsg( group_id, data );
+	QStringList* member_ip_list = fJsonFileIO->GetMemberIpList( group_id );
+
+	if (1 == member_ip_list->size()) return; // 只有自己
+	for (auto & i : *member_ip_list) fTransmitter->UdpSendP2P(msg, i);
 }
 
 void EventHandler::dealSendCommentMsg( QString topic_id, QString data )
@@ -206,10 +185,10 @@ void EventHandler::dealSendNewTopicMsg(QString theme, QString detail )
 	fTransmitter->UdpSendBroadcast(newTopicMsgJson);
 }
 
-void EventHandler::dealSendNewGroupMsg( QString name, QString intro, QString member_id_list )
+void EventHandler::dealSendNewGroupMsg( QString name, QString intro)
 {
-	QByteArray newGroupMsgJson = fJsonFileIO->createNewGroupMsg( name, intro, member_id_list );
-	// TODO:
+	QByteArray newGroupMsgJson = fJsonFileIO->createNewGroupMsg( name, intro);
+	fTransmitter->UdpSendBroadcast(newGroupMsgJson);
 }
 
 void EventHandler::OnlineReplyTimeout() {

@@ -17,6 +17,11 @@
 
 class DataTransmitter : public QObject{
 	Q_OBJECT
+public:
+	// 获取用户自己的ip地址
+	QString GetIp() {
+		return "192.168.43.111";
+	}
 private:
 	// UDP
 	QUdpSocket* sendUdpSocket_;   // 专管发送的udpsocket
@@ -46,6 +51,7 @@ protected:
 
 signals:
 	void TcpReadyRead(qintptr socketHandle);
+
 	/*
 	功能说明：Udp有数据到来时发出相应信号
 	传出参数：data - 接收的数据包、senderIp - 传输来源Ip地址

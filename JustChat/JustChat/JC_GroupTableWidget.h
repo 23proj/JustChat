@@ -5,6 +5,7 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
+#include "JsonFileIO.h"
 
 class JC_HomeDialog;
 class JC_GroupWidget;
@@ -17,7 +18,9 @@ public:
 	JC_GroupTableWidget(QWidget *parent);
 	~JC_GroupTableWidget();
 	void init();
-	public slots:
+	void DealRecvGroupMsg(QJsonObject msg);
+
+public slots:
 	void dealShow();
 	void dealShowGroup();
 private:
@@ -27,4 +30,5 @@ private:
 	QPushButton *fBtnBack;
 	JC_HomeDialog *fHome;
 	JC_GroupWidget *fGroupWidget;
+	JsonFileIO* jsonFileIo_;
 };
