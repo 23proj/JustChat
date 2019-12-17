@@ -58,8 +58,8 @@ public:
 	QByteArray createGroupMsg( QString group_id, QString data );
 	QByteArray createCommentMsg( QString topic_id, QString data );
 	QByteArray createNewTopicMsg(QString theme, QString detail );
-	QByteArray createNewGroupMsg( QString name, QString intro); 
-	QByteArray createEnterGroupMsg(QString group_id);
+	QByteArray createNewGroupMsg( QString name, QString intro, QString user_ip); 
+	QByteArray createEnterGroupMsg(QString group_id,QString user_ip);
 	QStringList* GetMemberIpList(QString group_id);
 
 public:

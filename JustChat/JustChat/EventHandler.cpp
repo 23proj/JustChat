@@ -81,7 +81,7 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	case GROUP_MSG:
 	{
 		fJsonFileIO->addMsgInfo(jsonObj);
-		//emit sigRecvGroupMsg( jsonObj );
+		emit sigRecvGroupMsg( jsonObj );
 		break;
 	}
 	case COMMENT_MSG:
@@ -191,11 +191,11 @@ void EventHandler::dealSendNewTopicMsg(QString theme, QString detail )
 
 void EventHandler::dealSendNewGroupMsg( QString name, QString intro)
 {
-	QByteArray newGroupMsgJson = fJsonFileIO->createNewGroupMsg( name, intro);
+	QByteArray newGroupMsgJson = fJsonFileIO->createNewGroupMsg( name, intro, fTransmitter->GetIp());
 	fTransmitter->UdpSendBroadcast(newGroupMsgJson);
 }
 void EventHandler::DealSendEnterGroupMsg(QString group_id) {
-	QByteArray enterGroupMsgJson = fJsonFileIO->createEnterGroupMsg(group_id);
+	QByteArray enterGroupMsgJson = fJsonFileIO->createEnterGroupMsg(group_id, fTransmitter->GetIp());
 	if(!enterGroupMsgJson.isEmpty()) fTransmitter->UdpSendBroadcast(enterGroupMsgJson);
 }
 void EventHandler::OnlineReplyTimeout() {

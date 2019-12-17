@@ -109,10 +109,12 @@ void JsonFileIO::EnterGroup(QString group_id, QString user_id, QString user_ip) 
 	// 首先更新fGroupInfos
 	for (auto&i : fGroupInfos)
 		if (group_id == i.toObject().value("group_id").toString()) {
-			auto ptr = i.toObject().find("member_id_list");
-			QJsonArray id_list = ptr->toArray();
+			QJsonArray id_list = i.toObject().value("member_id_list").toArray();
+			for (auto&j : id_list)
+				if (j.toString() == user_id) return;
 			id_list.append(user_id);
-			*ptr = id_list;
+			i.toObject().remove("member_id_list");
+			i.toObject().insert("member_id_list", id_list);
 		}
 
 	// 然后更新group_member_ip_list_
@@ -172,19 +174,26 @@ QByteArray JsonFileIO::createNewTopicMsg(QString theme, QString detail )
 	return QJsonDocument(jsonObj1).toJson();
 }
 
-QByteArray JsonFileIO::createNewGroupMsg( QString name, QString intro)
+QByteArray JsonFileIO::createNewGroupMsg( QString name, QString intro, QString user_ip)
 {
 	QString group_id = generate_id( GROUP_ID_LEN );
-	QJsonArray member_id_list;
-	member_id_list.append(fUserID);
-	QJsonObject jsonObj1({ { "type",NEW_GROUP_MSG },{ "group_id",group_id },{ "user_id",fUserID },{ "name",name },{ "intro",intro },{ "member_id_list",member_id_list } });
-	QJsonObject jsonObj2({ { "group_id",group_id },{ "user_id",fUserID },{ "name",name },{ "intro",intro },{ "member_id_list",member_id_list } });
+
+	QJsonArray id_list;
+	id_list.append(fUserID);
+
+	QStringList* ip_list = new QStringList;
+	ip_list->append(user_ip);
+	(*group_member_ip_list_)[group_id] = ip_list;
+
+	QJsonObject jsonObj1({ { "type",NEW_GROUP_MSG },{ "group_id",group_id },{ "user_id",fUserID },{ "name",name },{ "intro",intro },{ "member_id_list",id_list } });
+	QJsonObject jsonObj2({ { "group_id",group_id },{ "user_id",fUserID },{ "name",name },{ "intro",intro },{ "member_id_list",id_list } });
 	fGroupInfos.append(jsonObj2);
 	return QJsonDocument(jsonObj1).toJson();
 }
-QByteArray JsonFileIO::createEnterGroupMsg(QString group_id) {
+QByteArray JsonFileIO::createEnterGroupMsg(QString group_id, QString user_ip) {
 	for (auto&i : fGroupInfos) 
 		if (group_id == i.toObject().value("group_id").toString() && fUserID == i.toObject().value("user_id").toString()) return QByteArray();
+	EnterGroup(group_id, fUserID, user_ip);
 	QJsonObject jsonObj1({ { "type",ENTER_GROUP_MSG },{ "group_id",group_id },{ "user_id",fUserID }});
 	return QJsonDocument(jsonObj1).toJson();
 }
