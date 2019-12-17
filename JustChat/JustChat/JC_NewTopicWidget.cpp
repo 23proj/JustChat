@@ -2,10 +2,11 @@
 #include "JC_HomeDialog.h"
 
 JC_NewTopicWidget::JC_NewTopicWidget(QWidget *parent)
-	: QWidget( nullptr )
+	: QWidget(parent)
 {
 	ui.setupUi(this);
-	fHome = ( JC_HomeDialog * ) parent;
+	fHome = (JC_HomeDialog *)parent;
+	fEventHandler = fHome->fEventHandler;
 }
 
 void JC_NewTopicWidget::dealShow()
@@ -15,30 +16,30 @@ void JC_NewTopicWidget::dealShow()
 	/* 从数据库中重新读取信息填充到对话框 */
 
 	/* 显示窗口 */
+	ui.lineEtTopicTitle->setText("");
+	ui.txtTopicContent->setText("");
 	show();
 }
 
 void JC_NewTopicWidget::dealNewTopic()
 {
-	// 合法性检查
-	bool ret = true;
-
-	// 消息提示成功或失败
-	if ( ret == true )
-	{
-		// 提示
-		QMessageBox::information( nullptr, tr( "提示" ), tr( "创建话题成功!" ) );
-		
-		// 插入话题信息到数据库
-
-
-		// 打开话题框
-
-
-
-		// 关闭当前话题列表
-		//this->close();
+	// 获取话题相关属性
+	QString title(ui.lineEtTopicTitle->text());
+	QString content(ui.txtTopicContent->toPlainText());
+	// 检测输入是否为空
+	if (0 == title.size()) {
+		QMessageBox::information(nullptr, tr("提示"), tr("请输入话题主题!"));
+		return;
 	}
+	if (0 == content.size()) {
+		QMessageBox::information(nullptr, tr("提示"), tr("请输入话题详情!"));
+		return;
+	}
+	// 无问题则继续
+	fEventHandler->dealSendNewTopicMsg(title, content);
+	QMessageBox::information(nullptr, tr("提示"), tr("创建话题成功!"));
+	// 跳转页面(话题详情页)
+
 }
 
 JC_NewTopicWidget::~JC_NewTopicWidget()

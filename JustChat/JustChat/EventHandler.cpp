@@ -5,7 +5,7 @@ EventHandler::EventHandler(QObject *parent): QObject(parent){
 	fHome = ( JC_HomeDialog * ) parent;
 	fTransmitter = new DataTransmitter;
 	fTransmitter->init();
-	fJsonFileIO = new JsonFileIO(this);
+	fJsonFileIO = JsonFileIO::GetFileIOPtr();
 	
 	isAlone_ = true;
 }
@@ -87,9 +87,9 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	case SQUARE_MSG:
 	{
 		// 后台处理
-
+		fJsonFileIO->addSquareMsg(jsonObj);
 		// 前端处理
-		fJsonFileIO->addSquareMsg( jsonObj );
+		
 		emit sigRecvSquareMsg( jsonObj );
 		break;
 	}
@@ -105,7 +105,7 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	case COMMENT_MSG:
 	{
 		// 后台处理
-
+		fJsonFileIO->addMsgInfo(jsonObj);
 		// 前端处理
 	
 		emit sigRecvCommentMsg( jsonObj );
@@ -114,6 +114,7 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 	case NEW_TOPIC_MSG:
 	{
 		// 后台处理
+		fJsonFileIO->addTopicInfo(jsonObj);
 
 		// 前端处理
 	
@@ -196,13 +197,13 @@ void EventHandler::dealSendGroupMsg( QString group_id, QString data )
 void EventHandler::dealSendCommentMsg( QString topic_id, QString data )
 {
 	QByteArray commentMsgJson = fJsonFileIO->createCommentMsg( topic_id, data );
-	// TODO:
+	fTransmitter->UdpSendBroadcast(commentMsgJson);
 }
 
-void EventHandler::dealSendNewTopicMsg( QString theme, QString detail )
+void EventHandler::dealSendNewTopicMsg(QString theme, QString detail )
 {
-	QByteArray newTopicMsgJson = fJsonFileIO->createNewTopicMsg( theme, detail );
-	// TODO:
+	QByteArray newTopicMsgJson = fJsonFileIO->createNewTopicMsg(theme, detail);
+	fTransmitter->UdpSendBroadcast(newTopicMsgJson);
 }
 
 void EventHandler::dealSendNewGroupMsg( QString name, QString intro, QString member_id_list )

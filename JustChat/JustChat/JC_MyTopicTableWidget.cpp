@@ -10,7 +10,7 @@ JC_MyTopicTableWidget::JC_MyTopicTableWidget(QWidget *parent)
 	fCurWidget = fTopicTableWidget;
 	fBtnView = new QPushButton( "查看" );
 	fBtnBack = new QPushButton( "返回" );
-	fTopicWidget = new JC_TopicWidget();
+	fTopicWidget = new JC_TopicWidget(parent);
 	fTopicWidget->hide();
 
 	fTopicTableWidget->setHorizontalHeaderLabels( QStringList() << "id" << "标题" << "内容" );
@@ -33,6 +33,8 @@ JC_MyTopicTableWidget::JC_MyTopicTableWidget(QWidget *parent)
 	mainLayout->addLayout( hLayout );
 	setLayout( mainLayout );
 	setWindowTitle( tr( "查看我的话题" ) );
+
+	jsonFileIo_ = JsonFileIO::GetFileIOPtr();
 }
 
 JC_MyTopicTableWidget::~JC_MyTopicTableWidget()
@@ -52,18 +54,22 @@ void JC_MyTopicTableWidget::dealShow()
 	fTopicTableWidget->clearContents();
 
 	/* 从数据库中重新读取信息填充到对话框 */
+	QJsonArray* topicInfos = jsonFileIo_->GetTopicInfos();
+	QString myId = jsonFileIo_->getUserID();
+	int count = topicInfos->size();
 
-	for ( qint32 i = 0; i < 5; ++i )
-	{
-		QTableWidgetItem* itmId = new QTableWidgetItem( QString::number( i ) );
-		QTableWidgetItem* itmTitle = new QTableWidgetItem( QString( "我的话题%1" ).arg( i ) );
-		QTableWidgetItem* itmContent = new QTableWidgetItem( QString( "我的话题%1的内容" ).arg( i ) );
-		itmId->setTextAlignment( Qt::AlignCenter );
-		itmTitle->setTextAlignment( Qt::AlignCenter );
-		itmContent->setTextAlignment( Qt::AlignCenter );
-		fTopicTableWidget->setItem( i, 0, itmId );
-		fTopicTableWidget->setItem( i, 1, itmTitle );
-		fTopicTableWidget->setItem( i, 2, itmContent );
+	for (int i = 0; i < count; ++i) {
+		QJsonObject jsonObj = topicInfos->at(i).toObject();
+		if (jsonObj.value("user_id").toString() != myId) continue;
+		QTableWidgetItem *id = new QTableWidgetItem(jsonObj.value("topic_id").toString());
+		QTableWidgetItem *title = new QTableWidgetItem(jsonObj.value("theme").toString());
+		QTableWidgetItem *content = new QTableWidgetItem(jsonObj.value("detail").toString());
+		id->setTextAlignment(Qt::AlignCenter);
+		title->setTextAlignment(Qt::AlignCenter);
+		content->setTextAlignment(Qt::AlignCenter);
+		fTopicTableWidget->setItem(i, 0, id);
+		fTopicTableWidget->setItem(i, 1, title);
+		fTopicTableWidget->setItem(i, 2, content);
 	}
 
 	/* 显示窗口 */
@@ -83,11 +89,11 @@ void JC_MyTopicTableWidget::dealShowTopic()
 	}
 
 	// 获取窗口信息
-	fTopicWidget->setID( ( qint32 ) items[0]->text().toInt() );
+	fTopicWidget->setID(items[0]->text());
 	fTopicWidget->setTheme( items[1]->text() );
 	fTopicWidget->setDetail( items[2]->text() );
-	fTopicWidget->setCommentMsgs( QList<QJsonObject>() ); // TODO: 填充评论数据
+	//fTopicWidget->setCommentMsgs( QList<QJsonObject>() ); // TODO: 填充评论数据
 	fCurWidget->hide();
 	fCurWidget = fTopicWidget;
-	fCurWidget->show();
+	fTopicWidget->dealShow();
 }

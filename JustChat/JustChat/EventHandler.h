@@ -12,6 +12,10 @@ MsgType(1 byte) + MsgTypeId(4 byte) + MsgContent(<=256 byte)
 #include "JC_Public.h"
 #include "JsonFileIO.h"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 
 class JC_HomeDialog;
 
@@ -54,7 +58,7 @@ public slots:
 	void dealSendSquareMsg( QString data );
 	void dealSendGroupMsg( QString group_id, QString data );
 	void dealSendCommentMsg( QString topic_id, QString data );
-	void dealSendNewTopicMsg( QString theme, QString detail );
+	void dealSendNewTopicMsg(QString theme, QString detail );
 	void dealSendNewGroupMsg( QString name, QString intro, QString member_id_list );
 signals:
 	// 接收消息的信号

@@ -5,6 +5,7 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
+#include "JsonFileIO.h"
 
 class JC_HomeDialog;
 class JC_TopicWidget;
@@ -28,4 +29,6 @@ private:
 	QPushButton *fBtnBack;
 	JC_TopicWidget *fTopicWidget;
 	JC_HomeDialog *fHome;
+
+	JsonFileIO* jsonFileIo_;
 };
