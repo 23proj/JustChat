@@ -2,7 +2,7 @@
 #include "JC_HomeDialog.h"
 
 JC_MyGroupTableWidget::JC_MyGroupTableWidget(QWidget *parent)
-	: QWidget( nullptr )
+	: QWidget(parent)
 {
 	fHome = ( JC_HomeDialog * ) parent;
 	setWindowTitle( tr( "我的群组表格" ) );
@@ -35,6 +35,7 @@ JC_MyGroupTableWidget::JC_MyGroupTableWidget(QWidget *parent)
 	setWindowTitle( tr( "查看我的群组" ) );
 
 	jsonFileIO_ = JsonFileIO::GetFileIOPtr();
+	eventHandler_ = fHome->fEventHandler;
 }
 
 JC_MyGroupTableWidget::~JC_MyGroupTableWidget()
@@ -50,7 +51,7 @@ void JC_MyGroupTableWidget::init()
 
 void JC_MyGroupTableWidget::DealRecvGroupMsg(QJsonObject msg) {
 	// 只有当前界面是组聊详情且该组聊的id是发来的消息的group_id才显示在界面上
-	if (fCurWidget == fGroupWidget && fGroupWidget->GetID() == msg.value("group_id").toString())
+	if (fCurWidget == fGroupWidget && fGroupWidget->GetID() == msg.value("type_id").toString())
 		fGroupWidget->addGroupMsg(msg);
 }
 
@@ -63,7 +64,7 @@ void JC_MyGroupTableWidget::dealShow()
 	QJsonArray* groupInfos = jsonFileIO_->GetGroupInfos();
 	QString myId = jsonFileIO_->getUserID();
 	int count = groupInfos->size();
-
+	int row = 0;
 	for (int i = 0; i < count; ++i) {
 		QJsonObject jsonObj = groupInfos->at(i).toObject();
 		if (jsonObj.value("user_id").toString() != myId) continue;
@@ -74,10 +75,11 @@ void JC_MyGroupTableWidget::dealShow()
 		id->setTextAlignment(Qt::AlignCenter);
 		name->setTextAlignment(Qt::AlignCenter);
 		intro->setTextAlignment(Qt::AlignCenter);
-		fGroupTableWidget->setItem(i, 0, id);
-		fGroupTableWidget->setItem(i, 1, name);
-		fGroupTableWidget->setItem(i, 2, intro);
-		fGroupTableWidget->setItem(i, 3, memberNum);
+		fGroupTableWidget->setItem(row, 0, id);
+		fGroupTableWidget->setItem(row, 1, name);
+		fGroupTableWidget->setItem(row, 2, intro);
+		fGroupTableWidget->setItem(row, 3, memberNum);
+		++row;
 	}
 
 	/* 显示窗口 */
@@ -91,8 +93,11 @@ void JC_MyGroupTableWidget::dealShowGroup()
 	// 获取当前选择的群组
 	QList<QTableWidgetItem*> items = fGroupTableWidget->selectedItems();
 	if ( items.empty() ) QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个群组" ) );
-	else { // 获取窗口信息
-		fGroupWidget->setID(items[0]->text());
+	else { 
+		QString id = items[0]->text();
+		eventHandler_->DealSendEnterGroupMsg(id);
+		// 获取窗口信息
+		fGroupWidget->setID(id);
 		fGroupWidget->setName(items[1]->text());
 		fGroupWidget->setIntro(items[2]->text());
 		//fGroupWidget->setGroupMsgs(QList<QJsonObject>()); // TODO: 填充群组消息数据

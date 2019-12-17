@@ -174,7 +174,7 @@ void EventHandler::dealSendGroupMsg( QString group_id, QString data )
 	QStringList* member_ip_list = fJsonFileIO->GetMemberIpList( group_id );
 
 	if (1 == member_ip_list->size()) return; // 只有自己
-	cout << " 发送" << endl;
+	cout << "blue" << endl;
 	for (auto & i : *member_ip_list) fTransmitter->UdpSendP2P(msg, i);
 }
 

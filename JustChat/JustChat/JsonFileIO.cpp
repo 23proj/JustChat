@@ -207,6 +207,7 @@ QByteArray JsonFileIO::createNewGroupMsg( QString name, QString intro, QString u
 QByteArray JsonFileIO::createEnterGroupMsg(QString group_id, QString user_ip) {
 	for (auto&i : fGroupInfos) 
 		if (group_id == i.toObject().value("group_id").toString() && fUserID == i.toObject().value("user_id").toString()) return QByteArray();
+	EnterGroup(group_id, fUserID, user_ip);
 	QJsonObject jsonObj1({ { "type",ENTER_GROUP_MSG },{ "group_id",group_id },{ "user_id",fUserID }});
 	return QJsonDocument(jsonObj1).toJson();
 }

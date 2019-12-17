@@ -35,7 +35,6 @@ void JC_GroupWidget::setGroupMsgs( QList<QJsonObject> groupMsgs )
 void JC_GroupWidget::addGroupMsg( QJsonObject groupMsg )
 {
 	// 窗口消息区添加一条数据
-	std::cout << "heh" << std::endl;
 	ui.listWidget->addItem(groupMsg.value("data").toString());
 }
 

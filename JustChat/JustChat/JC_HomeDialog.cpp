@@ -121,6 +121,7 @@ void JC_HomeDialog::dealRecvSquareMsg( QJsonObject squareMsg )
 void JC_HomeDialog::dealRecvGroupMsg( QJsonObject groupMsg )
 {
 	fGroupTableWidget->DealRecvGroupMsg(groupMsg);
+	fMyGroupTableWidget->DealRecvGroupMsg(groupMsg);
 }
 
 void JC_HomeDialog::dealRecvCommentMsg( QJsonObject commentMsg )
