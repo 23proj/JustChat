@@ -6,6 +6,7 @@
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QPushButton>
 #include "JsonFileIO.h"
+#include "EventHandler.h"
 
 class JC_HomeDialog;
 class JC_GroupWidget;
@@ -31,4 +32,5 @@ private:
 	JC_HomeDialog *fHome;
 	JC_GroupWidget *fGroupWidget;
 	JsonFileIO* jsonFileIo_;
+	EventHandler* eventHandler_;
 };

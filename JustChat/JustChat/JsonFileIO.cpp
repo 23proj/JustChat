@@ -8,20 +8,12 @@ JsonFileIO* JsonFileIO::ptr = new JsonFileIO;
 JsonFileIO::JsonFileIO(QObject *parent)
 	: QObject(parent)
 {
-	group_member_id_list_ = new std::map<QString, QStringList*>;
 	group_member_ip_list_ = new std::map<QString, QStringList*>;
 	QDir dir;
 	if ( !dir.exists( JSON_FILE_DIR ) )
 		dir.mkpath( JSON_FILE_DIR );
 	if ( !loadAllData() )
 		; // TODO: log
-	// 根据文件初始化group_member_id_list_
-	for (auto&i : fGroupInfos) {
-		QStringList *p = new QStringList;
-		for (auto&j : i.toObject().value("member_id_list").toArray())
-			p->append(j.toString());
-		(*group_member_id_list_)[i.toObject().value("group_id").toString()] = p;
-	}
 }
 
 void JsonFileIO::exit()
@@ -113,6 +105,19 @@ bool JsonFileIO::loadAllData()
 	return true;
 }
 
+void JsonFileIO::EnterGroup(QString group_id, QString user_id, QString user_ip) {
+	// 首先更新fGroupInfos
+	for (auto&i : fGroupInfos)
+		if (group_id == i.toObject().value("group_id").toString()) {
+			auto ptr = i.toObject().find("member_id_list");
+			QJsonArray id_list = ptr->toArray();
+			id_list.append(user_id);
+			*ptr = id_list;
+		}
+
+	// 然后更新group_member_ip_list_
+	(*group_member_ip_list_)[group_id]->append(user_ip);
+}
 
 QString JsonFileIO::getUserID()
 {
@@ -172,20 +177,30 @@ QByteArray JsonFileIO::createNewGroupMsg( QString name, QString intro)
 	QString group_id = generate_id( GROUP_ID_LEN );
 	QJsonArray member_id_list;
 	member_id_list.append(fUserID);
-	(*group_member_id_list_)[group_id] = new QStringList(fUserID);
 	QJsonObject jsonObj1({ { "type",NEW_GROUP_MSG },{ "group_id",group_id },{ "user_id",fUserID },{ "name",name },{ "intro",intro },{ "member_id_list",member_id_list } });
 	QJsonObject jsonObj2({ { "group_id",group_id },{ "user_id",fUserID },{ "name",name },{ "intro",intro },{ "member_id_list",member_id_list } });
 	fGroupInfos.append(jsonObj2);
 	return QJsonDocument(jsonObj1).toJson();
 }
+QByteArray JsonFileIO::createEnterGroupMsg(QString group_id) {
+	for (auto&i : fGroupInfos) 
+		if (group_id == i.toObject().value("group_id").toString() && fUserID == i.toObject().value("user_id").toString()) return QByteArray();
+	QJsonObject jsonObj1({ { "type",ENTER_GROUP_MSG },{ "group_id",group_id },{ "user_id",fUserID }});
+	return QJsonDocument(jsonObj1).toJson();
+}
+
 QStringList* JsonFileIO::GetMemberIpList(QString group_id) {
 	if (group_member_ip_list_->find(group_id) == group_member_ip_list_->end()) {
-		// 查询操作
+		// 查询操作,先获取id_list
+		QJsonArray id_list;
+		for (auto&i : fGroupInfos) 
+			if (group_id == i.toObject().value("group_id").toString())
+				id_list = i.toObject().value("member_id_list").toArray();
+		// 然后获取ip_list
 		QStringList* ip_list = new QStringList;
-		QStringList* id_list = (*group_member_id_list_)[group_id];
-		for (auto& i : *id_list)
+		for (auto& i : id_list)
 			for (auto& j : fUserInfos)
-				if (j.toObject().value("user_id").toString() == i) {
+				if (j.toObject().value("user_id") == i) {
 					ip_list->append(j.toObject().value("user_ip").toString());
 					break;
 				}

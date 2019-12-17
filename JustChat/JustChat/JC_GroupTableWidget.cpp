@@ -2,7 +2,7 @@
 #include "JC_HomeDialog.h"
 
 JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
-	: QWidget( nullptr )
+	: QWidget(parent)
 {
 	fHome = ( JC_HomeDialog * ) parent;
 	setWindowTitle( tr( "所有群组表格" ) );
@@ -35,6 +35,7 @@ JC_GroupTableWidget::JC_GroupTableWidget(QWidget *parent)
 	setLayout( mainLayout );
 
 	jsonFileIo_ = JsonFileIO::GetFileIOPtr();
+	eventHandler_ = fHome->fEventHandler;
 }
 
 JC_GroupTableWidget::~JC_GroupTableWidget()
@@ -88,8 +89,10 @@ void JC_GroupTableWidget::dealShowGroup()
 	QList<QTableWidgetItem*> items = fGroupTableWidget->selectedItems();
 	if ( items.empty() ) QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个群组" ) );
 	else {
+		QString id = items[0]->text();
+		eventHandler_->DealSendEnterGroupMsg(id);
 		// 获取窗口信息
-		fGroupWidget->setID(items[0]->text());
+		fGroupWidget->setID(id);
 		fGroupWidget->setName(items[1]->text());
 		fGroupWidget->setIntro(items[2]->text());
 		//fGroupWidget->setGroupMsgs(QList<QJsonObject>()); // TODO: 填充群组消息数据

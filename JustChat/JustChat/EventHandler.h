@@ -60,6 +60,7 @@ public slots:
 	void dealSendCommentMsg( QString topic_id, QString data );
 	void dealSendNewTopicMsg(QString theme, QString detail );
 	void dealSendNewGroupMsg( QString name, QString intro);
+	void DealSendEnterGroupMsg(QString group_id);
 signals:
 	// 接收消息的信号
 	void sigRecvOnlineMsg( QJsonObject onlineMsg );

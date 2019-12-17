@@ -137,6 +137,10 @@ void EventHandler::dealUdpReceive( QByteArray* data, QString* senderIp )
 		if ( fJsonFileIO->LoadData(Comment, COMMENT_INFO)) fTransmitter->TcpSendP2P(Comment, *senderIp);
 		break;
 	}
+	case ENTER_GROUP_MSG: {
+		fJsonFileIO->EnterGroup(jsonObj.value("group_id").toString(), jsonObj.value("user_id").toString(), *senderIp);
+		break;
+	}
 	default:
 		break;
 	}
@@ -190,7 +194,10 @@ void EventHandler::dealSendNewGroupMsg( QString name, QString intro)
 	QByteArray newGroupMsgJson = fJsonFileIO->createNewGroupMsg( name, intro);
 	fTransmitter->UdpSendBroadcast(newGroupMsgJson);
 }
-
+void EventHandler::DealSendEnterGroupMsg(QString group_id) {
+	QByteArray enterGroupMsgJson = fJsonFileIO->createEnterGroupMsg(group_id);
+	if(!enterGroupMsgJson.isEmpty()) fTransmitter->UdpSendBroadcast(enterGroupMsgJson);
+}
 void EventHandler::OnlineReplyTimeout() {
 	if (0 == ipList_.size()) return;
 
