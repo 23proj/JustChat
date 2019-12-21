@@ -5,8 +5,8 @@ DataTransmitter::DataTransmitter(QObject* parent):QObject(parent){
 	// UDP
 	sendUdpSocket_ = new QUdpSocket;
 	recvUdpSocket_ = new QUdpSocket;
-	sendUdpSocket_->bind(QHostAddress("192.168.43.111"), sendUdpPort_);
-	recvUdpSocket_->bind(QHostAddress("192.168.43.111"), recvUdpPort_);
+	sendUdpSocket_->bind(QHostAddress("172.20.10.8"), sendUdpPort_);
+	recvUdpSocket_->bind(QHostAddress("172.20.10.8"), recvUdpPort_);
 	
 	// TCP
 	sendTcpSocket_ = new QTcpSocket;

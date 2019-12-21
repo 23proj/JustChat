@@ -79,6 +79,8 @@ void JC_TopicTableWidget::dealShowTopic()
 	QList<QTableWidgetItem*> items = fTopicTableWidget->selectedItems();
 	if ( items.empty() ) QMessageBox::warning( nullptr, tr( "提示" ), tr( "请先选择一个主题" ) );
 	else {
+
+
 		// 获取窗口信息
 		fTopicWidget->setID(items[0]->text());
 		fTopicWidget->setTheme(items[1]->text());
@@ -88,5 +90,6 @@ void JC_TopicTableWidget::dealShowTopic()
 		fCurWidget = fTopicWidget;
 		fTopicWidget->dealShow();
 	}
+
 }
 
