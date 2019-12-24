@@ -8,6 +8,9 @@
 #include <QTimer>
 #include <map>
 #include <iostream>
+#include <stdio.h>
+#include <fstream>
+
 using std::cout;
 using std::endl;
 
@@ -43,6 +46,16 @@ private:
 	// 存储组成员ip<group_id, &ip_list>(避免每发一次group_msg就要查询一次)
 	std::map<QString , QStringList* >* group_member_ip_list_;
 	QString fUserID;
+
+	FILE* SAFileData_;
+public:
+	void OpenSAFile();
+	void AddSAFile(QString& str);
+	void WriteFlag();
+	// 返回赞同的条数
+	double ReadSAFile();
+	void CloseSAFile();
+
 
 public:
 	QJsonArray* GetTopicInfos() {return (&fTopicInfos);};

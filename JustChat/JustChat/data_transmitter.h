@@ -20,7 +20,7 @@ class DataTransmitter : public QObject{
 public:
 	// 获取用户自己的ip地址
 	QString GetIp() {
-		return "192.168.43.111";
+		return "172.20.10.8";
 	}
 private:
 	// UDP

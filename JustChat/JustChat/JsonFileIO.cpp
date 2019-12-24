@@ -3,7 +3,40 @@
 #include <QDir>
 #include <QDataStream>
 
+
+
 JsonFileIO* JsonFileIO::ptr = new JsonFileIO;
+
+
+void JsonFileIO::OpenSAFile() {
+	QString file_path = JSON_FILE_DIR + "/comments.csv";
+	fopen_s(&SAFileData_, file_path.toStdString().c_str(), "a");
+	fputs("label\tx_test\n",SAFileData_);
+}
+void JsonFileIO::AddSAFile(QString &str) {
+	QString data = "0\t" + str + "\n";
+	fputs(data.toStdString().c_str(),SAFileData_);
+}
+void JsonFileIO::WriteFlag() {
+	FILE* p = NULL;
+	QString file_path = JSON_FILE_DIR + "/flag.csv";
+	fopen_s(&p, file_path.toStdString().c_str(), "w");
+	fputc('1', p);
+	fclose(p);
+}
+double JsonFileIO::ReadSAFile() {
+	std::ifstream in;
+	QString file_path = JSON_FILE_DIR + "/result.csv";
+	in.open(file_path.toStdString().c_str());
+	double agree = 0;
+	in >> agree;
+	in.close();
+	remove(file_path.toStdString().c_str());
+	return agree;
+}
+void JsonFileIO::CloseSAFile() {
+	fclose(SAFileData_);
+}
 
 JsonFileIO::JsonFileIO(QObject *parent)
 	: QObject(parent)

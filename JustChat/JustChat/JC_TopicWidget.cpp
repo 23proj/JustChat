@@ -1,5 +1,6 @@
 #include "JC_TopicWidget.h"
 #include "JC_HomeDialog.h"
+#include "windows.h"
 
 JC_TopicWidget::JC_TopicWidget( QWidget *parent)
 	: QWidget(parent)
@@ -44,14 +45,30 @@ void JC_TopicWidget::dealShow()
 	/* 从数据库中重新读取信息填充到对话框 */
 	QJsonArray* MsgInfos = jsonFileIo_->GetMsgInfos();
 	int count = MsgInfos->size();
-
+	jsonFileIo_->OpenSAFile();
+	int total_num = 0;
 	for (int i = 0; i < count; ++i) {
 		QJsonObject jsonObj = MsgInfos->at(i).toObject();
 		if (jsonObj.value("type").toInt() != COMMENT_MSG) continue;
 		if (jsonObj.value("type_id").toString() != topicId_) continue;
-		QString *content = new QString(jsonObj.value("data").toString());
-		ui.listWidget->addItem(jsonObj.value("data").toString());
+
+		++total_num;
+		QString data = jsonObj.value("data").toString();
+		//QString *content = new QString(jsonObj.value("data").toString());
+		ui.listWidget->addItem(data);
+		jsonFileIo_->AddSAFile(data);
+		
+		
+
 	}
+	jsonFileIo_->WriteFlag();
+	jsonFileIo_->CloseSAFile();
+	Sleep(30000);
+	double agree_num = jsonFileIo_->ReadSAFile();
+	ui.progressBar->setMaximum(total_num);
+	ui.progressBar->setValue(agree_num);
+	ui.resultLabel->setText(QString("正面：%1%").arg((int)(agree_num*100 / total_num)));
+
 	/* 显示窗口 */
 	show();
 }
