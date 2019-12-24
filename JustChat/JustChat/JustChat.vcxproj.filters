@@ -78,9 +78,6 @@
     <ClCompile Include="JsonFileIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JC_ProgressDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="JC_HomeDialog.h">
@@ -123,9 +120,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="JsonFileIO.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="JC_ProgressDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

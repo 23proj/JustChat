@@ -9,7 +9,7 @@
 
 class JC_HomeDialog;
 class JC_TopicWidget;
-class JC_ProgressDialog;
+//class JC_ProgressDialog;
 
 class JC_TopicTableWidget : public QWidget
 {
@@ -31,5 +31,5 @@ private:
 	JC_HomeDialog *fHome;
 	JC_TopicWidget *fTopicWidget;
 	JsonFileIO* jsonFileIo_;
-	JC_ProgressDialog* PD;
+	//JC_ProgressDialog* PD;
 };
